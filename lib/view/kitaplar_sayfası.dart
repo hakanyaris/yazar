@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:yazar/model/kitap.dart';
 
 class KitaplarSayfasi extends StatefulWidget {
   @override
@@ -29,12 +30,15 @@ class _KitaplarSayfasiState extends State<KitaplarSayfasi> {
     );
   }
 
-  _kitapEkle(BuildContext context) {
-    _pencereAc(context);
+  _kitapEkle(BuildContext context) async {
+    String? kitapAdi = await _pencereAc(context);
+    if (kitapAdi != null) {
+      Kitap yeniKitap = Kitap(kitapAdi, DateTime.now());
+    }
   }
 
   Future<String?> _pencereAc(BuildContext context) {
-   return showDialog<String>(
+    return showDialog<String>(
       context: context,
       builder: (context) {
         String? sonuc;
