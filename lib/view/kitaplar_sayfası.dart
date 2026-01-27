@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:yazar/model/kitap.dart';
+import 'package:yazar/yerel_veri_tabani.dart';
 
-class KitaplarSayfasi extends StatefulWidget {
-  @override
-  State<KitaplarSayfasi> createState() => _KitaplarSayfasiState();
-}
+class KitaplarSayfasi extends StatelessWidget {
+  YerelVeriTabani _yerelVeriTabani = YerelVeriTabani();
 
-class _KitaplarSayfasiState extends State<KitaplarSayfasi> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -30,10 +28,12 @@ class _KitaplarSayfasiState extends State<KitaplarSayfasi> {
     );
   }
 
-  _kitapEkle(BuildContext context) async {
+  void _kitapEkle(BuildContext context) async {
     String? kitapAdi = await _pencereAc(context);
     if (kitapAdi != null) {
       Kitap yeniKitap = Kitap(kitapAdi, DateTime.now());
+      int? kitapIdsi = await _yerelVeriTabani.createKitap(yeniKitap);
+      print("Kitap id si : $kitapIdsi");
     }
   }
 
@@ -44,7 +44,11 @@ class _KitaplarSayfasiState extends State<KitaplarSayfasi> {
         String? sonuc;
         return AlertDialog(
           title: Text('Kitap Adını Giriniz'),
-          content: TextField(),
+          content: TextField(
+            onChanged: (value) {
+              sonuc = value;
+            },
+          ),
           actions: [
             TextButton(
               onPressed: () {
