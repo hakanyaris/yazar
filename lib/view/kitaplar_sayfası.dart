@@ -5,10 +5,13 @@ import 'package:yazar/yerel_veri_tabani.dart';
 class KitaplarSayfasi extends StatelessWidget {
   YerelVeriTabani _yerelVeriTabani = YerelVeriTabani();
 
+  List<Kitap> _kitaplar = [];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: appBar(),
+      body: buildBody(),
 
       floatingActionButton: _buildKitapEkleFab(context),
     );
@@ -17,6 +20,27 @@ class KitaplarSayfasi extends StatelessWidget {
   //---------------------------------------------------------------------------
   AppBar appBar() {
     return AppBar(title: Text('KİTAPLAR SAYFASI'));
+  }
+
+  Widget buildBody() {
+    // init Stata kullanmıyoruz FutureBuilder Kullanıyoruz.
+    // FuturBuilder ile  //future içindeki fonsiyon çalışır daha sora // buildere yazılan fonlsiyon çalışır. yani
+    // _tumKitaplariGetir fonksiyonu ile kitapları sqflite den çeker sonra bulder: deki  _buildListView ile ekranı çizer.
+    return FutureBuilder(future: _tumKitaplariGetir(), builder: _buildListView);
+  }
+
+  Widget _buildListView(BuildContext context, AsyncSnapshot<void> snapShot) {
+    return ListView.builder(
+      itemCount: _kitaplar.length,
+      itemBuilder: _buildListItem,
+    );
+  }
+
+  Widget _buildListItem(BuildContext context, int index) {
+    return ListTile(
+      leading: CircleAvatar(child: Text(_kitaplar[index].id.toString())),
+      title:Text(_kitaplar[index].isim.toString())
+    );
   }
 
   Widget _buildKitapEkleFab(BuildContext context) {
@@ -34,6 +58,13 @@ class KitaplarSayfasi extends StatelessWidget {
       Kitap yeniKitap = Kitap(kitapAdi, DateTime.now());
       int? kitapIdsi = await _yerelVeriTabani.createKitap(yeniKitap);
       print("Kitap id si : $kitapIdsi");
+    }
+  }
+
+  Future<void> _tumKitaplariGetir() async {
+    _kitaplar = await _yerelVeriTabani.readTumKitaplar();
+    for (var element in _kitaplar) {
+      print(element.isim);
     }
   }
 
