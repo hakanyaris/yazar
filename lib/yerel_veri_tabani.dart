@@ -3,7 +3,7 @@ import 'package:path/path.dart';
 import 'package:yazar/model/kitap.dart';
 
 class YerelVeriTabani {
-  //singletion  
+  //singletion
   YerelVeriTabani._privateConstructur();
 
   static final YerelVeriTabani _nesne = YerelVeriTabani._privateConstructur();
@@ -56,19 +56,33 @@ CREATE TABLE $_kitaplarTabloAdi (
       return -1;
   }
 
-   Future<List<Kitap>> readTumKitaplar()async{
-    Database? db= await _veriTabaniGetir();
-    List<Kitap> kitaplar=[];
-    if(db!=null){
-      List<Map<String, dynamic>>  kitaplarMap= await db.query(_kitaplarTabloAdi);
-      for( Map<String, dynamic>  m in kitaplarMap ){
-       Kitap k= Kitap.fromMap(m);
+  Future<List<Kitap>> readTumKitaplar() async {
+    Database? db = await _veriTabaniGetir();
+    List<Kitap> kitaplar = [];
+    if (db != null) {
+      List<Map<String, dynamic>> kitaplarMap = await db.query(
+        _kitaplarTabloAdi,
+      );
+      for (Map<String, dynamic> m in kitaplarMap) {
+        Kitap k = Kitap.fromMap(m);
         kitaplar.add(k);
-      } 
       }
-      return kitaplar; 
-   }
-   
+    }
+    return kitaplar;
+  }
+
+  Future<int?> updateKitap(Kitap kitap) async {
+    Database? db = await _veriTabaniGetir();
+    if (db != null) {
+      return await db.update(
+        _kitaplarTabloAdi,
+        kitap.toMap(),
+        where: "$_idKitaplar = ?",
+        whereArgs: [kitap.id],
+      );
+    } else
+      return 0;
+  }
 }
 
 

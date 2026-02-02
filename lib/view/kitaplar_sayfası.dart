@@ -2,7 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:yazar/model/kitap.dart';
 import 'package:yazar/yerel_veri_tabani.dart';
 
-class KitaplarSayfasi extends StatelessWidget {
+class KitaplarSayfasi extends StatefulWidget {
+  @override
+  State<KitaplarSayfasi> createState() => _KitaplarSayfasiState();
+}
+
+class _KitaplarSayfasiState extends State<KitaplarSayfasi> {
   YerelVeriTabani _yerelVeriTabani = YerelVeriTabani();
 
   List<Kitap> _kitaplar = [];
@@ -39,7 +44,7 @@ class KitaplarSayfasi extends StatelessWidget {
   Widget _buildListItem(BuildContext context, int index) {
     return ListTile(
       leading: CircleAvatar(child: Text(_kitaplar[index].id.toString())),
-      title:Text(_kitaplar[index].isim.toString())
+      title: Text(_kitaplar[index].isim.toString()),
     );
   }
 
@@ -59,6 +64,7 @@ class KitaplarSayfasi extends StatelessWidget {
       int? kitapIdsi = await _yerelVeriTabani.createKitap(yeniKitap);
       print("Kitap id si : $kitapIdsi");
     }
+    setState(() {});
   }
 
   Future<void> _tumKitaplariGetir() async {
