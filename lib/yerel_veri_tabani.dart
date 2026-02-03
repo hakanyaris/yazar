@@ -28,7 +28,7 @@ class YerelVeriTabani {
 
       _veriTabani = await openDatabase(
         veriTabaniYolu,
-        version: 2,
+        version: 1,
         //onCreate fonksiyonu veri tabanı oluştuğunda çalışan fonsiyondur.Bu yüzden biz tabloları da burada oluşturuyoruz.
         onCreate: _tabloOlustur,
       );
@@ -71,18 +71,18 @@ CREATE TABLE $_kitaplarTabloAdi (
     return kitaplar;
   }
 
-  Future<int?> updateKitap(Kitap kitap) async {
-    Database? db = await _veriTabaniGetir();
-    if (db != null) {
-      return await db.update(
-        _kitaplarTabloAdi,
-        kitap.toMap(),
-        where: "$_idKitaplar = ?",
-        whereArgs: [kitap.id],
-      );
-    } else
-      return 0;
-  }
+  // Future<int> updateKitap(Kitap kitap) async {
+  //   Database? db = await _veriTabaniGetir();
+  //   if (db != null) {
+  //     return await db.update(
+  //       _kitaplarTabloAdi,
+  //       kitap.toMap(),
+  //       where: "$_idKitaplar = ?",
+  //       whereArgs: [kitap.id],
+  //     );
+  //   } else
+  //     return 0;
+  // }
 }
 
 
