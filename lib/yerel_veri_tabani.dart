@@ -80,8 +80,22 @@ CREATE TABLE $_kitaplarTabloAdi (
         where: "$_idKitaplar = ?",
         whereArgs: [kitap.id],
       );
-    } else
+    } else {
       return 0;
+    }
+  }
+
+  Future<int> deleteKitap(Kitap kitap) async {
+    Database? db = await _veriTabaniGetir();
+    if (db != null) {
+      return await db.delete(
+        _kitaplarTabloAdi,
+        where: "$_idKitaplar = ?",
+        whereArgs: [kitap.id],
+      );
+    } else {
+      return 0;
+    }
   }
 }
 
