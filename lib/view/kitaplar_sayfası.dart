@@ -11,6 +11,7 @@ class _KitaplarSayfasiState extends State<KitaplarSayfasi> {
   YerelVeriTabani _yerelVeriTabani = YerelVeriTabani();
 
   List<Kitap> _kitaplar = [];
+  
 
   @override
   Widget build(BuildContext context) {
@@ -80,7 +81,12 @@ class _KitaplarSayfasiState extends State<KitaplarSayfasi> {
       Kitap yeniKitap = Kitap(kitapAdi, DateTime.now());
       int? kitapIdsi = await _yerelVeriTabani.createKitap(yeniKitap);
       print("Kitap id si : $kitapIdsi");
-      setState(() {});
+   if(kitapIdsi!=null){
+    setState(() {
+      
+    });
+   }
+      
     }
   }
 
@@ -89,6 +95,7 @@ class _KitaplarSayfasiState extends State<KitaplarSayfasi> {
     for (var element in _kitaplar) {
       print(element.isim);
     }
+   
   }
 
   void _kitapGuncelle(BuildContext context, int index) async {

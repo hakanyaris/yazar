@@ -80,8 +80,8 @@ CREATE TABLE $_kitaplarTabloAdi (
         where: "$_idKitaplar = ?",
         whereArgs: [kitap.id],
       );
-    } else
-      return 0;
+    } else{ return 0;}
+     
   }
 
   Future<int> deleteKitap(Kitap kitap) async {

@@ -16,7 +16,7 @@ class Kitap {
     return {
       "id": id,
       "isim": isim,
-      'olusturulmaTarihi': olusturulmaTarihi.millisecond,
+      'olusturulmaTarihi': olusturulmaTarihi.millisecondsSinceEpoch,
     };
   }
 }
