@@ -21,6 +21,14 @@ class YerelVeriTabani {
   String _isimKitaplar = "isim";
   String _olusturulmaTarihiKitaplar = "olusturulmaTarihi";
 
+  String _bolumlerTabloAdi = "bolumler";
+  String _idBolumler = "id";
+  String _kitapIdBolumler = "kitapId";
+  String _baslikBolumler = "baslik";
+  String _icerikBolumler = "icerik";
+
+  String _olusturulmaTarihiBolumler = "olusturulmaTarihi";
+
   Future<Database?> _veriTabaniGetir() async {
     if (_veriTabani == null) {
       String dosyaYolu = await getDatabasesPath();
@@ -43,6 +51,16 @@ CREATE TABLE $_kitaplarTabloAdi (
 	$_idKitaplar	INTEGER NOT NULL UNIQUE PRIMARY KEY AUTOINCREMENT,
 	$_isimKitaplar	TEXT NOT NULL,
 	$_olusturulmaTarihiKitaplar 	INTEGER
+);
+""");
+    await db.execute("""
+CREATE TABLE $_bolumlerTabloAdi (
+	$_idBolumler	INTEGER NOT NULL UNIQUE PRIMARY KEY AUTOINCREMENT,
+	$_kitapIdBolumler	INTEGER NOT NULL,
+  $_baslikBolumler TEXT NOT NULL,
+  $_icerikBolumler  TEXT ,
+	$_olusturulmaTarihiBolumler TEXT DEFAULT CURRENT_TIMESTAMP
+  FOREIGN KEY($_kitapIdBolumler) REFERENCES "$_kitaplarTabloAdi"($_idKitaplar) ON UPDATE CASCADE ON DELETE CASCADE
 );
 """);
   }
@@ -80,8 +98,9 @@ CREATE TABLE $_kitaplarTabloAdi (
         where: "$_idKitaplar = ?",
         whereArgs: [kitap.id],
       );
-    } else{ return 0;}
-     
+    } else {
+      return 0;
+    }
   }
 
   Future<int> deleteKitap(Kitap kitap) async {
