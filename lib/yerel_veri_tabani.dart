@@ -1,5 +1,6 @@
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
+import 'package:yazar/model/bolum.dart';
 import 'package:yazar/model/kitap.dart';
 
 class YerelVeriTabani {
@@ -59,8 +60,8 @@ CREATE TABLE $_bolumlerTabloAdi (
 	$_kitapIdBolumler	INTEGER NOT NULL,
   $_baslikBolumler TEXT NOT NULL,
   $_icerikBolumler  TEXT ,
-	$_olusturulmaTarihiBolumler TEXT DEFAULT CURRENT_TIMESTAMP
-  FOREIGN KEY($_kitapIdBolumler) REFERENCES "$_kitaplarTabloAdi"($_idKitaplar) ON UPDATE CASCADE ON DELETE CASCADE
+	$_olusturulmaTarihiBolumler TEXT DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY($_kitapIdBolumler) REFERENCES "$_kitaplarTabloAdi"("$_idKitaplar") ON UPDATE CASCADE ON DELETE CASCADE
 );
 """);
   }
@@ -110,6 +111,59 @@ CREATE TABLE $_bolumlerTabloAdi (
         _kitaplarTabloAdi,
         where: "$_idKitaplar = ?",
         whereArgs: [kitap.id],
+      );
+    } else {
+      return 0;
+    }
+  }
+
+  Future<int?> createBolum(Bolum bolum) async {
+    Database? db = await _veriTabaniGetir();
+    if (db != null) {
+      return await db.insert(_bolumlerTabloAdi, bolum.toMap());
+    } else
+      return -1;
+  }
+
+  // Bolumler kısmında tüm bölümleri değil belli bir kitaba ait bölümleri veritabanından alacağız
+  Future<List<Bolum>> readTumBolumler(int kitapId) async {
+    Database? db = await _veriTabaniGetir();
+    List<Bolum> bolumler = [];
+    if (db != null) {
+      List<Map<String, dynamic>> bolumlerMap = await db.query(
+        _bolumlerTabloAdi,
+        where: "$_kitapIdBolumler = ?",
+        whereArgs: [kitapId],
+      );
+      for (Map<String, dynamic> m in bolumlerMap) {
+        Bolum b = Bolum.fromMap(m);
+        bolumler.add(b);
+      }
+    }
+    return bolumler;
+  }
+
+  Future<int> updateBolum(Bolum bolum) async {
+    Database? db = await _veriTabaniGetir();
+    if (db != null) {
+      return await db.update(
+        _bolumlerTabloAdi,
+        bolum.toMap(),
+        where: "$_idBolumler = ?",
+        whereArgs: [bolum.id],
+      );
+    } else {
+      return 0;
+    }
+  }
+
+  Future<int> deleteBolum(Bolum bolum) async {
+    Database? db = await _veriTabaniGetir();
+    if (db != null) {
+      return await db.delete(
+        _bolumlerTabloAdi,
+        where: "$_idBolumler = ?",
+        whereArgs: [bolum.id],
       );
     } else {
       return 0;

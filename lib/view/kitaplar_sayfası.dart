@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:yazar/model/kitap.dart';
+import 'package:yazar/view/bolumler_sayfasi.dart';
 import 'package:yazar/yerel_veri_tabani.dart';
 
 class KitaplarSayfasi extends StatefulWidget {
@@ -58,10 +59,13 @@ class _KitaplarSayfasiState extends State<KitaplarSayfasi> {
             onPressed: () {
               _kitapSil(index);
             },
-            icon: Icon(Icons.delete),
+            icon: Icon(Icons.delete, color: Colors.black),
           ),
         ],
       ),
+      onTap: () {
+        _bolumlerSayfasiniAc(context, index);
+      },
     );
   }
 
@@ -113,35 +117,44 @@ class _KitaplarSayfasiState extends State<KitaplarSayfasi> {
       setState(() {});
     }
   }
-}
 
-Future<String?> _pencereAc(BuildContext context) {
-  return showDialog<String>(
-    context: context,
-    builder: (context) {
-      String? sonuc;
-      return AlertDialog(
-        title: Text('Kitap Adını Giriniz'),
-        content: TextField(
-          onChanged: (value) {
-            sonuc = value;
-          },
-        ),
-        actions: [
-          TextButton(
-            onPressed: () {
-              Navigator.pop(context);
+  Future<String?> _pencereAc(BuildContext context) {
+    return showDialog<String>(
+      context: context,
+      builder: (context) {
+        String? sonuc;
+        return AlertDialog(
+          title: Text('Kitap Adını Giriniz'),
+          content: TextField(
+            onChanged: (value) {
+              sonuc = value;
             },
-            child: Text('İptal'),
           ),
-          TextButton(
-            onPressed: () {
-              Navigator.pop(context, sonuc);
-            },
-            child: Text('Onayla'),
-          ),
-        ],
-      );
-    },
-  );
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: Text('İptal'),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context, sonuc);
+              },
+              child: Text('Onayla'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _bolumlerSayfasiniAc(BuildContext context, int index) {
+    MaterialPageRoute sayfaYolu = MaterialPageRoute(
+      builder: (context) {
+        return BolumlerSayfasi(_kitaplar[index]);
+      },
+    );
+    Navigator.push(context, sayfaYolu);
+  }
 }

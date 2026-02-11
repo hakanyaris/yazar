@@ -12,5 +12,5 @@ class Bolum {
 
   Map<String, dynamic> toMap() {
     return {"id": id, "kitapId": kitapId, "baslik": baslik, "icerik": icerik};
-  }
+  } 
 }
