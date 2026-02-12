@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:yazar/model/bolum.dart';
 import 'package:yazar/model/kitap.dart';
+import 'package:yazar/view/bolum_detay_sayfasi.dart';
 import 'package:yazar/yerel_veri_tabani.dart';
 
 class BolumlerSayfasi extends StatefulWidget {
@@ -12,7 +13,7 @@ class BolumlerSayfasi extends StatefulWidget {
 }
 
 class _BolumlerSayfasiState extends State<BolumlerSayfasi> {
- YerelVeriTabani _yerelVeriTabani = YerelVeriTabani();
+  YerelVeriTabani _yerelVeriTabani = YerelVeriTabani();
 
   List<Bolum> _bolumler = [];
 
@@ -28,7 +29,7 @@ class _BolumlerSayfasiState extends State<BolumlerSayfasi> {
 
   //---------------------------------------------------------------------------
   AppBar appBar() {
-    return AppBar(title: Text(widget._kitap.isim) );
+    return AppBar(title: Text(widget._kitap.isim));
   }
 
   Widget buildBody() {
@@ -39,19 +40,19 @@ class _BolumlerSayfasiState extends State<BolumlerSayfasi> {
   }
 
   Widget _buildListView(BuildContext context, AsyncSnapshot<void> snapShot) {
- // Veri yükleniyor mu kontrolü
-  if (snapShot.connectionState == ConnectionState.waiting) {
-    return Center(child: CircularProgressIndicator());
-  }
-  
-  if (_bolumler.isEmpty) {
-    return Center(child: Text("Henüz Bolum eklenmemiş."));
-  }
+    // Veri yükleniyor mu kontrolü
+    if (snapShot.connectionState == ConnectionState.waiting) {
+      return Center(child: CircularProgressIndicator());
+    }
 
-  return ListView.builder(
-    itemCount: _bolumler.length,
-    itemBuilder: _buildListItem,
-  );
+    if (_bolumler.isEmpty) {
+      return Center(child: Text("Henüz Bolum eklenmemiş."));
+    }
+
+    return ListView.builder(
+      itemCount: _bolumler.length,
+      itemBuilder: _buildListItem,
+    );
   }
 
   Widget _buildListItem(BuildContext context, int index) {
@@ -92,8 +93,8 @@ class _BolumlerSayfasiState extends State<BolumlerSayfasi> {
 
   void _BolumEkle(BuildContext context) async {
     String? BolumBasligi = await _pencereAc(context);
-    int? kitapId=widget._kitap.id;
-    if (BolumBasligi != null && kitapId!= null) {
+    int? kitapId = widget._kitap.id;
+    if (BolumBasligi != null && kitapId != null) {
       Bolum yeniBolum = Bolum(kitapId, BolumBasligi);
       int? BolumIdsi = await _yerelVeriTabani.createBolum(yeniBolum);
       print("Bolum id si : $BolumIdsi");
@@ -104,9 +105,10 @@ class _BolumlerSayfasiState extends State<BolumlerSayfasi> {
   }
 
   Future<void> _tumBolumleriGetir() async {
-    int? kitapId =widget._kitap.id;
-    if(kitapId != null){ _bolumler = await _yerelVeriTabani.readTumBolumler(kitapId);}
-   
+    int? kitapId = widget._kitap.id;
+    if (kitapId != null) {
+      _bolumler = await _yerelVeriTabani.readTumBolumler(kitapId);
+    }
 
     for (var element in _bolumler) {
       print(element.baslik);
@@ -117,7 +119,7 @@ class _BolumlerSayfasiState extends State<BolumlerSayfasi> {
     String? yeniBolumBasligi = await _pencereAc(context);
     if (yeniBolumBasligi != null) {
       Bolum bolum = _bolumler[index];
-      bolum.baslik= yeniBolumBasligi;
+      bolum.baslik = yeniBolumBasligi;
       int guncellenenSatirSayisi = await _yerelVeriTabani.updateBolum(bolum);
       if (guncellenenSatirSayisi > 0) {
         setState(() {});
@@ -166,11 +168,11 @@ class _BolumlerSayfasiState extends State<BolumlerSayfasi> {
   }
 
   void _bolumDetaySayfasiniAc(BuildContext context, int index) {
-    // MaterialPageRoute sayfaYolu = MaterialPageRoute(
-    //   builder: (context) {
-    //     return BolumlerSayfasi(_bolumler[index]);
-    //   },
-    // );
-    // Navigator.push(context, sayfaYolu);
+    MaterialPageRoute sayfaYolu = MaterialPageRoute(
+      builder: (context) {
+        return BolumDetaySayfasi(_bolumler[index]);
+      },
+    );
+    Navigator.push(context, sayfaYolu);
   }
 }

@@ -60,7 +60,7 @@ CREATE TABLE $_bolumlerTabloAdi (
   $_baslikBolumler TEXT NOT NULL,
   $_icerikBolumler  TEXT ,
 	$_olusturulmaTarihiBolumler TEXT DEFAULT CURRENT_TIMESTAMP,
-  FOREIGN KEY($_kitapIdBolumler) REFERENCES "$_kitaplarTabloAdi"("$_idKitaplar") ON UPDATE CASCADE ON DELETE CASCADE
+  FOREIGN KEY("$_kitapIdBolumler") REFERENCES "$_kitaplarTabloAdi" ("$_idKitaplar") ON UPDATE CASCADE ON DELETE CASCADE
 );
 """);
   }
