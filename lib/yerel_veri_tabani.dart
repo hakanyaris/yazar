@@ -27,7 +27,6 @@ class YerelVeriTabani {
   String _kitapIdBolumler = "kitapId";
   String _baslikBolumler = "baslik";
   String _icerikBolumler = "icerik";
-
   String _olusturulmaTarihiBolumler = "olusturulmaTarihi";
 
   Future<Database?> _veriTabaniGetir() async {

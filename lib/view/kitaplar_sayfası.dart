@@ -36,10 +36,19 @@ class _KitaplarSayfasiState extends State<KitaplarSayfasi> {
   }
 
   Widget _buildListView(BuildContext context, AsyncSnapshot<void> snapShot) {
-    return ListView.builder(
-      itemCount: _kitaplar.length,
-      itemBuilder: _buildListItem,
-    );
+ // Veri yükleniyor mu kontrolü
+  if (snapShot.connectionState == ConnectionState.waiting) {
+    return Center(child: CircularProgressIndicator());
+  }
+  
+  if (_kitaplar.isEmpty) {
+    return Center(child: Text("Henüz kitap eklenmemiş."));
+  }
+
+  return ListView.builder(
+    itemCount: _kitaplar.length,
+    itemBuilder: _buildListItem,
+  );
   }
 
   Widget _buildListItem(BuildContext context, int index) {
@@ -102,8 +111,8 @@ class _KitaplarSayfasiState extends State<KitaplarSayfasi> {
     if (yeniKitap != null) {
       Kitap kitap = _kitaplar[index];
       kitap.isim = yeniKitap;
-      int SilinenSatirSayisi = await _yerelVeriTabani.updateKitap(kitap);
-      if (SilinenSatirSayisi > 0) {
+      int guncellenenSatirSayisi = await _yerelVeriTabani.updateKitap(kitap);
+      if (guncellenenSatirSayisi > 0) {
         setState(() {});
       }
     }
