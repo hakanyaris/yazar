@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:yazar/model/kitap.dart';
+import 'package:yazar/sabitler.dart';
 import 'package:yazar/view/bolumler_sayfasi.dart';
 import 'package:yazar/yerel_veri_tabani.dart';
 
@@ -36,19 +37,19 @@ class _KitaplarSayfasiState extends State<KitaplarSayfasi> {
   }
 
   Widget _buildListView(BuildContext context, AsyncSnapshot<void> snapShot) {
- // Veri yükleniyor mu kontrolü
-  if (snapShot.connectionState == ConnectionState.waiting) {
-    return Center(child: CircularProgressIndicator());
-  }
-  
-  if (_kitaplar.isEmpty) {
-    return Center(child: Text("Henüz kitap eklenmemiş."));
-  }
+    // Veri yükleniyor mu kontrolü
+    if (snapShot.connectionState == ConnectionState.waiting) {
+      return Center(child: CircularProgressIndicator());
+    }
 
-  return ListView.builder(
-    itemCount: _kitaplar.length,
-    itemBuilder: _buildListItem,
-  );
+    if (_kitaplar.isEmpty) {
+      return Center(child: Text("Henüz kitap eklenmemiş."));
+    }
+
+    return ListView.builder(
+      itemCount: _kitaplar.length,
+      itemBuilder: _buildListItem,
+    );
   }
 
   Widget _buildListItem(BuildContext context, int index) {
@@ -88,9 +89,12 @@ class _KitaplarSayfasiState extends State<KitaplarSayfasi> {
   }
 
   void _kitapEkle(BuildContext context) async {
-    String? kitapAdi = await _pencereAc(context);
-    if (kitapAdi != null) {
-      Kitap yeniKitap = Kitap(kitapAdi, DateTime.now());
+    List<dynamic>? kitapAdiveKategori = await _pencereAc(context);
+    if (kitapAdiveKategori != null && kitapAdiveKategori.length > 1) {
+      String kitapAdi = kitapAdiveKategori[0];
+      int kategori = kitapAdiveKategori[1];
+
+      Kitap yeniKitap = Kitap(kitapAdi, DateTime.now(), kategori);
       int? kitapIdsi = await _yerelVeriTabani.createKitap(yeniKitap);
       print("Kitap id si : $kitapIdsi");
       if (kitapIdsi != null) {
@@ -107,10 +111,19 @@ class _KitaplarSayfasiState extends State<KitaplarSayfasi> {
   }
 
   void _kitapGuncelle(BuildContext context, int index) async {
-    String? yeniKitap = await _pencereAc(context);
-    if (yeniKitap != null) {
-      Kitap kitap = _kitaplar[index];
-      kitap.isim = yeniKitap;
+    Kitap kitap = _kitaplar[index];
+    List<dynamic>? kitapAdiveKategori = await _pencereAc(
+      context,
+      mevcutIsim: kitap.isim,
+      mevcutKategori: kitap.kategori,
+    );
+    if (kitapAdiveKategori != null && kitapAdiveKategori.length > 1) {
+      String kitapAdi = kitapAdiveKategori[0];
+      int kategori = kitapAdiveKategori[1];
+      //mevcut kitap adı ve kategori adı yeni gelen ad ve kategoriyle aynı ise işlem yapma değişmişse işlem yapma performans güncellemesi
+      if (kitap.isim != kitapAdi && kitap.kategori != kategori)
+        kitap.isim = kitapAdi;
+      kitap.kategori = kategori;
       int guncellenenSatirSayisi = await _yerelVeriTabani.updateKitap(kitap);
       if (guncellenenSatirSayisi > 0) {
         setState(() {});
@@ -127,16 +140,70 @@ class _KitaplarSayfasiState extends State<KitaplarSayfasi> {
     }
   }
 
-  Future<String?> _pencereAc(BuildContext context) {
-    return showDialog<String>(
+  void _bolumlerSayfasiniAc(BuildContext context, int index) {
+    MaterialPageRoute sayfaYolu = MaterialPageRoute(
+      builder: (context) {
+        return BolumlerSayfasi(_kitaplar[index]);
+      },
+    );
+    Navigator.push(context, sayfaYolu);
+  }
+
+  Future<List<dynamic>?> _pencereAc(
+    BuildContext context, {
+    String mevcutIsim = "",
+    int mevcutKategori = 0,
+  }) {
+    TextEditingController isimController = TextEditingController(
+      text: mevcutIsim,
+    );
+    return showDialog<List<dynamic>>(
       context: context,
       builder: (context) {
-        String? sonuc;
+        // String? sonuc;
+        int _secilenKategori = mevcutKategori;
         return AlertDialog(
           title: Text('Kitap Adını Giriniz'),
-          content: TextField(
-            onChanged: (value) {
-              sonuc = value;
+          content: StatefulBuilder(
+            builder: (BuildContext context, void Function(void Function()) setState) {
+              return Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  TextField(
+                    controller: isimController,
+                    // onChanged: (value) {
+                    //   sonuc = value;
+                    // },
+                  ),
+                  SizedBox(height: 24),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text("Kategori"),
+                      DropdownButton<int>(
+                        value: _secilenKategori,
+                        items: Sabitler.kategoriler.keys.map((kategoriId) {
+                          return DropdownMenuItem<int>(
+                            child: Text(Sabitler.kategoriler[kategoriId] ?? ""),
+                            value: kategoriId,
+                          );
+                        }).toList(),
+                        onChanged: (int? yeniDeger) {
+                          setState(() {
+                            if (yeniDeger != null)
+                              // ÖNEMLİ setState yapsak bile sayfa yenilenmediğini görüyüroz çünkü AlertDialog builderi(contexi) ana sayfanın
+                              //contexinden farklı ve Alert dielogun bulderini güncellemek için AletDialog içinde Content parametresinde
+                              // StatefullBuilder() Kullanıyoruz
+                              setState(() {
+                                _secilenKategori = yeniDeger;
+                              });
+                          });
+                        },
+                      ),
+                    ],
+                  ),
+                ],
+              );
             },
           ),
           actions: [
@@ -148,7 +215,10 @@ class _KitaplarSayfasiState extends State<KitaplarSayfasi> {
             ),
             TextButton(
               onPressed: () {
-                Navigator.pop(context, sonuc);
+                Navigator.pop(context, [
+                  isimController.text.trim(),
+                  _secilenKategori,
+                ]);
               },
               child: Text('Onayla'),
             ),
@@ -156,14 +226,5 @@ class _KitaplarSayfasiState extends State<KitaplarSayfasi> {
         );
       },
     );
-  }
-
-  void _bolumlerSayfasiniAc(BuildContext context, int index) {
-    MaterialPageRoute sayfaYolu = MaterialPageRoute(
-      builder: (context) {
-        return BolumlerSayfasi(_kitaplar[index]);
-      },
-    );
-    Navigator.push(context, sayfaYolu);
   }
 }

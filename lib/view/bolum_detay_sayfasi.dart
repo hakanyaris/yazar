@@ -14,7 +14,6 @@ class BolumDetaySayfasi extends StatelessWidget {
   }
 
   AppBar _buildAppBar() {
-    void icerigiKaydet() {}
     return AppBar(
       title: Text(_bolum.baslik),
       actions: [IconButton(onPressed: _icerigiKaydet, icon: Icon(Icons.save))],
