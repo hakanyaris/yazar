@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 import 'package:yazar/model/bolum.dart';
@@ -21,6 +23,7 @@ class YerelVeriTabani {
   String _idKitaplar = "id";
   String _isimKitaplar = "isim";
   String _olusturulmaTarihiKitaplar = "olusturulmaTarihi";
+  String _kategoriKitaplar = "kategori";
 
   String _bolumlerTabloAdi = "bolumler";
   String _idBolumler = "id";
@@ -36,9 +39,14 @@ class YerelVeriTabani {
 
       _veriTabani = await openDatabase(
         veriTabaniYolu,
-        version: 1,
+        //versionu değiştirince onUpgrade çalışır
+        version: 2,
         //onCreate fonksiyonu veri tabanı oluştuğunda çalışan fonsiyondur.Bu yüzden biz tabloları da burada oluşturuyoruz.
         onCreate: _tabloOlustur,
+        //Veritabanımız ilk kez olşturulduğunda id isim olusturulmaTarih otomatik olarak sqflite tablo olarak oluşur.
+        //Fakat tablomuza ileride yeni bir satır (mesemla kategori sonradan ekledik)eklemek isteiğimizde tablo öncelden olşturulduğu için
+        //direk bunu yapmak bunun için onUpgrade kullanılıyoruz.
+        onUpgrade: _tabloGuncelle,
       );
     }
     return _veriTabani;
@@ -50,7 +58,8 @@ class YerelVeriTabani {
 CREATE TABLE $_kitaplarTabloAdi (
 	$_idKitaplar	INTEGER NOT NULL UNIQUE PRIMARY KEY AUTOINCREMENT,
 	$_isimKitaplar	TEXT NOT NULL,
-	$_olusturulmaTarihiKitaplar 	INTEGER
+	$_olusturulmaTarihiKitaplar 	INTEGER,
+  $_kategoriKitaplar INTEGER DEFAULT 0
 );
 """);
     await db.execute("""
@@ -63,6 +72,18 @@ CREATE TABLE $_bolumlerTabloAdi (
   FOREIGN KEY("$_kitapIdBolumler") REFERENCES "$_kitaplarTabloAdi" ("$_idKitaplar") ON UPDATE CASCADE ON DELETE CASCADE
 );
 """);
+  } //
+
+  Future<void> _tabloGuncelle(
+    Database db,
+    int oldVersion,
+    int newVersion,
+  ) async {
+    //kategori satırını kodumuza ekledik fakat cihazdaki veri tabanına eklenmesi için bu kodu yazdık ve
+    //ve openDatabase version: 2 yaptık (versionu değiiştirmezsek tabloda güncelleme olmaz)
+    await db.execute(
+      "ALTER TABLE $_kitaplarTabloAdi ADD COLUMN $_kategoriKitaplar INTEGER DEFAULT 0",
+    );
   }
 
   /// kitabı veritabanına ekleme fonksiyonu  bu adımdan sonra KitaplarSayfasi gidip orada  YerelVeriTabani nesnesi oluşturuyoruz

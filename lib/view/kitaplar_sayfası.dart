@@ -56,6 +56,7 @@ class _KitaplarSayfasiState extends State<KitaplarSayfasi> {
     return ListTile(
       leading: CircleAvatar(child: Text(_kitaplar[index].id.toString())),
       title: Text(_kitaplar[index].isim.toString()),
+      subtitle: Text(Sabitler.kategoriler[_kitaplar[index].kategori] ?? " "),
       trailing: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -118,12 +119,12 @@ class _KitaplarSayfasiState extends State<KitaplarSayfasi> {
       mevcutKategori: kitap.kategori,
     );
     if (kitapAdiveKategori != null && kitapAdiveKategori.length > 1) {
-      String kitapAdi = kitapAdiveKategori[0];
-      int kategori = kitapAdiveKategori[1];
+      String yeniKitapAdi = kitapAdiveKategori[0];
+      int yeniKategori = kitapAdiveKategori[1];
       //mevcut kitap adı ve kategori adı yeni gelen ad ve kategoriyle aynı ise işlem yapma değişmişse işlem yapma performans güncellemesi
-      if (kitap.isim != kitapAdi && kitap.kategori != kategori)
-        kitap.isim = kitapAdi;
-      kitap.kategori = kategori;
+      if (kitap.isim != yeniKitapAdi || kitap.kategori != yeniKategori)
+        kitap.isim = yeniKitapAdi;
+      kitap.kategori = yeniKategori;
       int guncellenenSatirSayisi = await _yerelVeriTabani.updateKitap(kitap);
       if (guncellenenSatirSayisi > 0) {
         setState(() {});
