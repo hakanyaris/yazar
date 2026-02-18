@@ -40,7 +40,7 @@ class YerelVeriTabani {
       _veriTabani = await openDatabase(
         veriTabaniYolu,
         //versionu değiştirince onUpgrade çalışır
-        version: 2,
+        version: 3,
         //onCreate fonksiyonu veri tabanı oluştuğunda çalışan fonsiyondur.Bu yüzden biz tabloları da burada oluşturuyoruz.
         onCreate: _tabloOlustur,
         //Veritabanımız ilk kez olşturulduğunda id isim olusturulmaTarih otomatik olarak sqflite tablo olarak oluşur.
@@ -76,14 +76,26 @@ CREATE TABLE $_bolumlerTabloAdi (
 
   Future<void> _tabloGuncelle(
     Database db,
-    int oldVersion,
-    int newVersion,
+    int eskiVersion, //mesela 2
+    int yeniVersion, //mesela 5
   ) async {
+    //Bu liste sayesinde version güncellemelerinde eksi güncelleme iki defa çalışmayacak ve yeni
+    // güncellemeler yeni version no girmemizle tabloya eklenecek
+    List<String> guncellemeKomutlari = [
+      "ALTER TABLE $_kitaplarTabloAdi ADD COLUMN $_kategoriKitaplar INTEGER DEFAULT 0",
+      "ALTER TABLE $_kitaplarTabloAdi ADD COLUMN test INTEGER DEFAULT 0",
+      //yeni komutları alta ekliyoruz
+    ];
+
+    for (int i = eskiVersion - 1; i < yeniVersion - 1; i++) {
+      await db.execute(guncellemeKomutlari[i]);
+    }
     //kategori satırını kodumuza ekledik fakat cihazdaki veri tabanına eklenmesi için bu kodu yazdık ve
     //ve openDatabase version: 2 yaptık (versionu değiiştirmezsek tabloda güncelleme olmaz)
-    await db.execute(
-      "ALTER TABLE $_kitaplarTabloAdi ADD COLUMN $_kategoriKitaplar INTEGER DEFAULT 0",
-    );
+    //komut yukarıda güncellendi for içinde
+    // await db.execute(
+    //   "ALTER TABLE $_kitaplarTabloAdi ADD COLUMN $_kategoriKitaplar INTEGER DEFAULT 0",
+    // );
   }
 
   /// kitabı veritabanına ekleme fonksiyonu  bu adımdan sonra KitaplarSayfasi gidip orada  YerelVeriTabani nesnesi oluşturuyoruz
