@@ -36,6 +36,7 @@ class YerelVeriTabani {
     if (_veriTabani == null) {
       String dosyaYolu = await getDatabasesPath();
       String veriTabaniYolu = join(dosyaYolu, "yazar.db");
+      //import 'package:path/path.dart'; eklemezsek Join çalışmaz kırmızı yanar.
 
       _veriTabani = await openDatabase(
         veriTabaniYolu,

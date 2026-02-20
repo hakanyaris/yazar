@@ -150,7 +150,7 @@ class _KitaplarSayfasiState extends State<KitaplarSayfasi> {
     Navigator.push(context, sayfaYolu);
   }
 
-  Future<List<dynamic>?> _pencereAc(
+  Future<List<dynamic>?>  _pencereAc(
     BuildContext context, {
     String mevcutIsim = "",
     int mevcutKategori = 0,
