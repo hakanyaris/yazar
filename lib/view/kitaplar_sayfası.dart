@@ -13,6 +13,14 @@ class _KitaplarSayfasiState extends State<KitaplarSayfasi> {
   YerelVeriTabani _yerelVeriTabani = YerelVeriTabani();
 
   List<Kitap> _kitaplar = [];
+  int _secilenKategoriAna = -1;
+  //Bu listeyi oluşturmamızın nedeni ,Sabitler.kategoriler.keys.map TÜM seçeneği olmamasındır.-1 TÜM kategoriler seçeneğini atayacağız.
+  List<int> _tumKategoriler = [-1];
+  @override
+  void initState() {
+    super.initState();
+    _tumKategoriler.addAll(Sabitler.kategoriler.keys);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -46,9 +54,49 @@ class _KitaplarSayfasiState extends State<KitaplarSayfasi> {
       return Center(child: Text("Henüz kitap eklenmemiş."));
     }
 
-    return ListView.builder(
-      itemCount: _kitaplar.length,
-      itemBuilder: _buildListItem,
+    return Column(
+      children: [
+        _buildKategoriFiltresi(),
+        Expanded(
+          child: ListView.builder(
+            itemCount: _kitaplar.length,
+            itemBuilder: _buildListItem,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildKategoriFiltresi() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: [
+        Text("Kategori"),
+        DropdownButton<int>(
+          value: _secilenKategoriAna,
+          items: _tumKategoriler.map((kategoriId) {
+            return DropdownMenuItem<int>(
+              child: Text(
+                kategoriId == -1
+                    ? "Hepsi"
+                    : Sabitler.kategoriler[kategoriId] ?? "",
+              ),
+              value: kategoriId,
+            );
+          }).toList(),
+          onChanged: (int? yeniDeger) {
+            setState(() {
+              if (yeniDeger != null)
+                // ÖNEMLİ setState yapsak bile sayfa yenilenmediğini görüyüroz çünkü AlertDialog builderi(contexi) ana sayfanın
+                //contexinden farklı ve Alert dielogun bulderini güncellemek için AletDialog içinde Content parametresinde
+                // StatefullBuilder() Kullanıyoruz
+                setState(() {
+                  _secilenKategoriAna = yeniDeger;
+                });
+            });
+          },
+        ),
+      ],
     );
   }
 
@@ -105,7 +153,7 @@ class _KitaplarSayfasiState extends State<KitaplarSayfasi> {
   }
 
   Future<void> _tumKitaplariGetir() async {
-    _kitaplar = await _yerelVeriTabani.readTumKitaplar();
+    _kitaplar = await _yerelVeriTabani.readTumKitaplar(_secilenKategoriAna);
     for (var element in _kitaplar) {
       print(element.isim);
     }
@@ -150,7 +198,7 @@ class _KitaplarSayfasiState extends State<KitaplarSayfasi> {
     Navigator.push(context, sayfaYolu);
   }
 
-  Future<List<dynamic>?>  _pencereAc(
+  Future<List<dynamic>?> _pencereAc(
     BuildContext context, {
     String mevcutIsim = "",
     int mevcutKategori = 0,
@@ -165,47 +213,56 @@ class _KitaplarSayfasiState extends State<KitaplarSayfasi> {
         int _secilenKategori = mevcutKategori;
         return AlertDialog(
           title: Text('Kitap Adını Giriniz'),
+          // ÖNEMLİ setState yapsak bile sayfa yenilenmediğini görüyüroz çünkü AlertDialog builderi(contexi) ana sayfanın
+          //contexinden farklı ve Alert dielogun bulderini güncellemek için AletDialog içinde Content parametresinde
+          // StatefullBuilder() Kullanıyoruz
           content: StatefulBuilder(
-            builder: (BuildContext context, void Function(void Function()) setState) {
-              return Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  TextField(
-                    controller: isimController,
-                    // onChanged: (value) {
-                    //   sonuc = value;
-                    // },
-                  ),
-                  SizedBox(height: 24),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            builder:
+                (
+                  BuildContext context,
+                  void Function(void Function()) setDialogState,
+                ) {
+                  return Column(
+                    mainAxisSize: MainAxisSize.min,
                     children: [
-                      Text("Kategori"),
-                      DropdownButton<int>(
-                        value: _secilenKategori,
-                        items: Sabitler.kategoriler.keys.map((kategoriId) {
-                          return DropdownMenuItem<int>(
-                            child: Text(Sabitler.kategoriler[kategoriId] ?? ""),
-                            value: kategoriId,
-                          );
-                        }).toList(),
-                        onChanged: (int? yeniDeger) {
-                          setState(() {
-                            if (yeniDeger != null)
-                              // ÖNEMLİ setState yapsak bile sayfa yenilenmediğini görüyüroz çünkü AlertDialog builderi(contexi) ana sayfanın
-                              //contexinden farklı ve Alert dielogun bulderini güncellemek için AletDialog içinde Content parametresinde
-                              // StatefullBuilder() Kullanıyoruz
+                      TextField(
+                        controller: isimController,
+                        // onChanged: (value) {
+                        //   sonuc = value;
+                        // },
+                      ),
+                      SizedBox(height: 24),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text("Kategori"),
+                          DropdownButton<int>(
+                            value: _secilenKategori,
+                            items: Sabitler.kategoriler.keys.map((kategoriId) {
+                              return DropdownMenuItem<int>(
+                                child: Text(
+                                  Sabitler.kategoriler[kategoriId] ?? "",
+                                ),
+                                value: kategoriId,
+                              );
+                            }).toList(),
+                            onChanged: (int? yeniDeger) {
                               setState(() {
-                                _secilenKategori = yeniDeger;
+                                if (yeniDeger != null)
+                                  // ÖNEMLİ setState yapsak bile sayfa yenilenmediğini görüyüroz çünkü AlertDialog builderi(contexi) ana sayfanın
+                                  //contexinden farklı ve Alert dielogun bulderini güncellemek için AletDialog içinde Content parametresinde
+                                  // StatefullBuilder() Kullanıyoruz
+                                  setState(() {
+                                    _secilenKategori = yeniDeger;
+                                  });
                               });
-                          });
-                        },
+                            },
+                          ),
+                        ],
                       ),
                     ],
-                  ),
-                ],
-              );
-            },
+                  );
+                },
           ),
           actions: [
             TextButton(

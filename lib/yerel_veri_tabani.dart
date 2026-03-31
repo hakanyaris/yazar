@@ -91,7 +91,7 @@ CREATE TABLE $_bolumlerTabloAdi (
     for (int i = eskiVersion - 1; i < yeniVersion - 1; i++) {
       await db.execute(guncellemeKomutlari[i]);
     }
-    //kategori satırını kodumuza ekledik fakat cihazdaki veri tabanına eklenmesi için bu kodu yazdık ve
+    //veritabanında olmayan kategori satırını kodumuza ekledik fakat cihazdaki veri tabanına eklenmesi için bu kodu yazdık ve
     //ve openDatabase version: 2 yaptık (versionu değiiştirmezsek tabloda güncelleme olmaz)
     //komut yukarıda güncellendi for içinde
     // await db.execute(
@@ -108,12 +108,17 @@ CREATE TABLE $_bolumlerTabloAdi (
       return -1;
   }
 
-  Future<List<Kitap>> readTumKitaplar() async {
+  Future<List<Kitap>> readTumKitaplar(int katergoriId) async {
+    //katergoriId kategoriler Hepsi seçilince kategoriId-1 geliyor.Veritabanında -1 karşılık gelen bir değer
+    //için hata fırlatıyor veya liste boş oluyor.Bu durumda -1 gelince filitre hiç yapımaması için kod yazacağız
+
     Database? db = await _veriTabaniGetir();
     List<Kitap> kitaplar = [];
     if (db != null) {
       List<Map<String, dynamic>> kitaplarMap = await db.query(
         _kitaplarTabloAdi,
+        where: "$_kategoriKitaplar = ?",
+        whereArgs: [katergoriId],
       );
       for (Map<String, dynamic> m in kitaplarMap) {
         Kitap k = Kitap.fromMap(m);
