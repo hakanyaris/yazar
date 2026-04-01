@@ -110,15 +110,28 @@ CREATE TABLE $_bolumlerTabloAdi (
 
   Future<List<Kitap>> readTumKitaplar(int katergoriId) async {
     //katergoriId kategoriler Hepsi seçilince kategoriId-1 geliyor.Veritabanında -1 karşılık gelen bir değer
-    //için hata fırlatıyor veya liste boş oluyor.Bu durumda -1 gelince filitre hiç yapımaması için kod yazacağız
+    //için hata fırlatıyor veya liste boş oluyor.Bu durumda -1 gelince filitre hiç yapılmaması için kod yazacağız
 
     Database? db = await _veriTabaniGetir();
     List<Kitap> kitaplar = [];
     if (db != null) {
+      String? filtre;
+      List<dynamic> filtreArgumanlari = [];
+      // katergori -1 gelirse filtre ve filtreArgumanlari boş kalacağı için where ve whereArgs filtreleri çalışmayacak
+      // ve kitaplarTablosu hepsi gelecek -1 büyük  olursa o kategorideki kitaplar gelecek
+      if (katergoriId >= 0) {
+        // && = and   ve
+        // || = or   veya
+        filtre =
+            "$_kategoriKitaplar = ? and  $_idKitaplar > ? "; // kategoriId  seçilen değer olan ve id 2 den büyük olanlar listelenir
+        filtre = "$_kategoriKitaplar = ?";
+        filtreArgumanlari.add(katergoriId);
+        //filtreArgumanlari.add(2);
+      }
       List<Map<String, dynamic>> kitaplarMap = await db.query(
         _kitaplarTabloAdi,
-        where: "$_kategoriKitaplar = ?",
-        whereArgs: [katergoriId],
+        where: filtre,
+        whereArgs: filtreArgumanlari,
       );
       for (Map<String, dynamic> m in kitaplarMap) {
         Kitap k = Kitap.fromMap(m);

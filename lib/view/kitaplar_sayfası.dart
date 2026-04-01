@@ -46,14 +46,13 @@ class _KitaplarSayfasiState extends State<KitaplarSayfasi> {
 
   Widget _buildListView(BuildContext context, AsyncSnapshot<void> snapShot) {
     // Veri yükleniyor mu kontrolü
-    if (snapShot.connectionState == ConnectionState.waiting) {
-      return Center(child: CircularProgressIndicator());
-    }
+    // if (snapShot.connectionState == ConnectionState.waiting) {
+    //   return Center(child: CircularProgressIndicator());
+    // }
 
-    if (_kitaplar.isEmpty) {
-      return Center(child: Text("Henüz kitap eklenmemiş."));
-    }
-
+    // if (_kitaplar.isEmpty) {
+    //   return Center(child: Text("Henüz kitap eklenmemiş."));
+    // }
     return Column(
       children: [
         _buildKategoriFiltresi(),
@@ -85,15 +84,10 @@ class _KitaplarSayfasiState extends State<KitaplarSayfasi> {
             );
           }).toList(),
           onChanged: (int? yeniDeger) {
-            setState(() {
-              if (yeniDeger != null)
-                // ÖNEMLİ setState yapsak bile sayfa yenilenmediğini görüyüroz çünkü AlertDialog builderi(contexi) ana sayfanın
-                //contexinden farklı ve Alert dielogun bulderini güncellemek için AletDialog içinde Content parametresinde
-                // StatefullBuilder() Kullanıyoruz
-                setState(() {
-                  _secilenKategoriAna = yeniDeger;
-                });
-            });
+            if (yeniDeger != null)
+              setState(() {
+                _secilenKategoriAna = yeniDeger;
+              });
           },
         ),
       ],
@@ -252,7 +246,7 @@ class _KitaplarSayfasiState extends State<KitaplarSayfasi> {
                                   // ÖNEMLİ setState yapsak bile sayfa yenilenmediğini görüyüroz çünkü AlertDialog builderi(contexi) ana sayfanın
                                   //contexinden farklı ve Alert dielogun bulderini güncellemek için AletDialog içinde Content parametresinde
                                   // StatefullBuilder() Kullanıyoruz
-                                  setState(() {
+                                  setDialogState(() {
                                     _secilenKategori = yeniDeger;
                                   });
                               });
