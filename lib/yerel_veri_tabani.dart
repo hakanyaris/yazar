@@ -168,6 +168,27 @@ CREATE TABLE $_bolumlerTabloAdi (
     }
   }
 
+  // chackbox ile seçilen kitapları seçmek için kullanılacak
+  Future<int> deleteKitaplar(List<int> kitaplarIdler) async {
+    Database? db = await _veriTabaniGetir();
+    if (db != null && kitaplarIdler.isNotEmpty) {
+      String filter = "$_idKitaplar in (";
+      for (int a = 0; a < kitaplarIdler.length; a++) {
+        if (a != kitaplarIdler.length - 1) {
+          filter += "?,";
+        } else
+          (filter += "?)");
+      }
+      return await db.delete(
+        _kitaplarTabloAdi,
+        where: filter,
+        whereArgs: kitaplarIdler,
+      );
+    } else {
+      return 0;
+    }
+  }
+
   Future<int?> createBolum(Bolum bolum) async {
     Database? db = await _veriTabaniGetir();
     if (db != null) {

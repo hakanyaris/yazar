@@ -16,6 +16,7 @@ class _KitaplarSayfasiState extends State<KitaplarSayfasi> {
   int _secilenKategoriAna = -1;
   //Bu listeyi oluşturmamızın nedeni ,Sabitler.kategoriler.keys.map TÜM seçeneği olmamasındır.-1 TÜM kategoriler seçeneğini atayacağız.
   List<int> _tumKategoriler = [-1];
+  List<int> _secilenKitapIdler = [];
   @override
   void initState() {
     super.initState();
@@ -34,7 +35,18 @@ class _KitaplarSayfasiState extends State<KitaplarSayfasi> {
 
   //---------------------------------------------------------------------------
   AppBar appBar() {
-    return AppBar(title: Text('KİTAPLAR SAYFASI'));
+    return AppBar(
+      title: Text('KİTAPLAR SAYFASI'),
+      actions: [
+        IconButton(
+          onPressed: _seciliKitaplariSil,
+          // () {
+          //   _kitapSil(index);
+          // },
+          icon: Icon(Icons.delete, color: Colors.black),
+        ),
+      ],
+    );
   }
 
   Widget buildBody() {
@@ -108,11 +120,29 @@ class _KitaplarSayfasiState extends State<KitaplarSayfasi> {
               _kitapGuncelle(context, index);
             },
           ),
+          //Kitapları tek tek silmek için Icon butonu değilde chackbox ile silmeyi aktifleştirdik.
+          /*
           IconButton(
-            onPressed: () {
-              _kitapSil(index);
+          onPressed: () {
+            _kitapSil(index);
+          },
+          icon: Icon(Icons.delete, color: Colors.black),
+        ),*/
+          Checkbox(
+            value: _secilenKitapIdler.contains(_kitaplar[index].id),
+            onChanged: (bool? yeniDeger) {
+              if (yeniDeger != null) {
+                int? kitapId = _kitaplar[index].id;
+                if (kitapId != null) {
+                  setState(() {
+                    if (yeniDeger) {
+                      _secilenKitapIdler.add(kitapId);
+                    } else
+                      (_secilenKitapIdler.remove(kitapId));
+                  });
+                }
+              }
             },
-            icon: Icon(Icons.delete, color: Colors.black),
           ),
         ],
       ),
@@ -178,6 +208,15 @@ class _KitaplarSayfasiState extends State<KitaplarSayfasi> {
     Kitap kitap = _kitaplar[index];
 
     int silinenSatirSayisi = await _yerelVeriTabani.deleteKitap(kitap);
+    if (silinenSatirSayisi > 0) {
+      setState(() {});
+    }
+  }
+
+  void _seciliKitaplariSil() async {
+    int silinenSatirSayisi = await _yerelVeriTabani.deleteKitaplar(
+      _secilenKitapIdler,
+    );
     if (silinenSatirSayisi > 0) {
       setState(() {});
     }
