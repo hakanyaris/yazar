@@ -132,6 +132,12 @@ CREATE TABLE $_bolumlerTabloAdi (
         _kitaplarTabloAdi,
         where: filtre,
         whereArgs: filtreArgumanlari,
+
+        // verileri hem alfabetik hemde numaratik olarak sıralamak için orderBy : kullanıyoruz.
+        orderBy:
+            "$_isimKitaplar  desc", //kitap ismine göre sıralar fakat desc ile sıralamayı ters çevirir
+        // "$_kategoriKitaplar desc, $_isimKitaplar asc " // bu listelemede listeyi kategori adına göre sıralar(kategori id göre) sonra kategori sıralaması aynı olanları  kitap adına göre sıralar
+        // "$_isimKitaplar collate localized " // collate localized ile alfabedelki sıralamada türkçe karakter ile sıralamaya uygun yapar.
       );
       for (Map<String, dynamic> m in kitaplarMap) {
         Kitap k = Kitap.fromMap(m);
