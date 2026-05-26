@@ -106,10 +106,11 @@ class _KitaplarSayfasiState extends State<KitaplarSayfasi> {
 
   Future<void> _tumKitaplariGetir() async {
     _kitaplar = await _yerelVeriTabani.readTumKitaplar();
-    for (var element in _kitaplar) {
-      print(element.isim);
-    }
+    // for (var element in _kitaplar) {
+    //   print(element.isim);
+    // }
   }
+
 
   void _kitapGuncelle(BuildContext context, int index) async {
     Kitap kitap = _kitaplar[index];
