@@ -18,11 +18,12 @@ samples, guidance on mobile development, and a full API reference.
 2=> view klasörü ve içinde kitaplar_sayfasi.dart oluşuruyoruz.   
 3=> mainde MaterialApp(home: KitaplarSayfasi()); diyoruz.
 4=> (Görsel olarak  kitaplarSayfasi ni tasarlıyoruz)Appbar ve FlotatingActionButton yerleştriyoruz.Buton onPress fonk _kitapEkle fonsinon tanımlıyoruz + simgesi veriyoruz
+------- kitapEkle flotainActionButton
 5=> KiapEkle fonksiyonunun içinde de _pencereAc() fonksinyonu tanımladık.
 6=> pencereAc Fonsiyonn içine ShowDialog  onun da içine AlertDialog fonk. koyuyoruz Alert dilaloga kitap eklemek için bir TextField()  ,iki tane buton koyuyoruz(TextButton) koyuyoruz iptal ve kaydet 
 7=> Texfiel yazılan değeri String sonuc  değerine eşitlerdik sonuc değerini  return showDilog<String> diyerek  ve  Future<String>?>  _pencereAc  diyerek fonsiyoru geriye String döndürür şekilde ayarladık.
 8=> Kitap Sınıfı oluşturuyoruz Model klasörü açıp içine Kitap sınıfı oluşturuyoruz. int? id,Sring isim ,DateTime olusturulmaTarihi ve kurucu metot;
-9=>_kitapEkle() FONKSİYONUN içine  yeni birkitap nesenesi oluştrup _pencereAc dan gelen sonuc (kitap adı) değerini kitap adı olarak veriyoruz.
+9=>_kitapEkle() FONKSİYONUN içine  yeni birkitap nesenesi oluştrup _pencereAc dan gelen sonuc (kitap adı) değerini kitap adı olarak veriyoruz.işlem bitince boş bir setState(){} oluşturuyoruz ki yeni eklenen kitap ekranda gösterilsin
 -------------SQFLİTE EKLEME------------
 10=> db Browser for sqLite windows versionunu indiriyoruz bu sql kodarını otomatik olarak oluşturur.sqflite eklentisi  telfon hafızasına veri kaydetmeye yarar
     not(sqLite kodu almak için bu programı kuruyoruz sqlite kodu elimizde varsa bu programı kurmamıza gerek yok kodları direkt visula stidio kodda kullanabiliriz.)
@@ -54,7 +55,19 @@ Map<String,object> toMap  fonsiyonu yazıyoruz  kitap.toMap  ekliyoruz .insert f
 30=>  KitaplarSayfasi() gidip  Yerel veri tabanı sınıfı nesnesine ulaşmak için 
 YerelVeriTabani yerelVeriTabani=YerelVeriTabani(); ekliyoruz 
 31=> KitaplarSayfasi() nda _kitapEkle() fonksiyonu içinde çağırdığımız createKİtap(Kitap kitap) fonksiyonuna showdialogdan gelen kitap Adi ile bir kitap nesnesi oluşturup bunu  gönderiyoruz
-32=> 
+------------Read
+32=> Veritabanına eklenen kitapları listelemek için Future<List<Kitap>> readTumKitaplar() fonksiyounun  oluşturuyotuz.db.query fonksiyonunu kullanıyoruz bu map türünde bir liste döndürür.
+List<Map<String,dynamic>>> kitaplarMap= await db.query(tabloadi)
+33=> Geriye map tipinde bir listedöndüğü için bu map listesini Kitap modeline çeviren Kitap sınıfı içinde 
+ isimlendirilmiş kurucu metot:
+ Kitap.fromMap(Map<String,dynamic> map){.......} oluşturuyoruz. sonra readTumKitaplar() metotu içinde for döngüsü ile map içindeki tüm kitapları gezip tek tek kitap nesnesine dönüştürüp bir kitap listesi içine koyup listeyi return ile geri döndürüyoruz.
+
+ 34=> KitaplarSayfasi() nda Future<void> tumKitaplariGetir()async{} fonksiyonu ile tüm kitapları veritabanından çeken bir fonk. oluşturuyoruz ve içinde readTumKitaplar() fonk. kullanıyoruz . KitaplarSayfasi() içinde  bir Kitap listesi olşturuyoruz.  gelen kitap listesini bu listeye atıyoruz.
+ ---------_buildBody()
+ 35=>Listelenen kitapları ekranda göstermek için _buildBody oluşturuyoruz.
+  Liste gelene kadar initState kullanmak yerine FutureBuilder(future: , builder:) kullanıyoruz. futureye atadığımız fonk(verileri çekme işlemi tumKitaplarıGetir()) bitince buildere atadığmız (ekranı çizme ) fonk. çalışır.ListView.builder kullanacağız
+
+
 
 
 

@@ -5,7 +5,7 @@ class Kitap {
   int kategori;
   Kitap(this.isim, this.olusturulmaTarihi, this.kategori);
 
-  //maptan verileri çeker
+  //maptan verileri çeker kitap sınıfının dönüstürür
   Kitap.fromMap(Map<String, dynamic> map)
     : id = map['id'],
       isim = map["isim"],
