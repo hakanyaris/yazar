@@ -50,7 +50,7 @@ import 'package:sqflite/sqflite.dart'; otomatik eklenir
 ------------CRUD Create (Create,Read,Upgrade,Delete)
 29=> Tabloya kitap eklemek için Create fonksiyonu oluşturuyoruz. Future<int> createKİtap(Kitap kitap) 
 burada db.insert(tabloADI, Map<String,dynamic>) kitap verilerini map a çevirmek için  Kitap sınıfı içinde 
-Map<String,object> toMap  fonsiyonu yazıyoruz  kitap.toMap  ekliyoruz .insert fonksiyonu geriye eklenen verinin id döndürülüyor
+Map<String,object> toMap  fonsiyonu yazıyoruz  kitap.toMap fonksiyona ekliyoruz .insert fonksiyonu geriye eklenen verinin id döndürüyor.
 ------------createKİtap Fonksiyonunu _kitapEkle()fonksiyounda çağırmak
 30=>  KitaplarSayfasi() gidip  Yerel veri tabanı sınıfı nesnesine ulaşmak için 
 YerelVeriTabani yerelVeriTabani=YerelVeriTabani(); ekliyoruz 
@@ -58,14 +58,18 @@ YerelVeriTabani yerelVeriTabani=YerelVeriTabani(); ekliyoruz
 ------------Read
 32=> Veritabanına eklenen kitapları listelemek için Future<List<Kitap>> readTumKitaplar() fonksiyounun  oluşturuyotuz.db.query fonksiyonunu kullanıyoruz bu map türünde bir liste döndürür.
 List<Map<String,dynamic>>> kitaplarMap= await db.query(tabloadi)
-33=> Geriye map tipinde bir listedöndüğü için bu map listesini Kitap modeline çeviren Kitap sınıfı içinde 
+33=> Geriye map tipinde bir liste döndüğü için bu map listesini Kitap modeline çeviren Kitap sınıfı içinde 
  isimlendirilmiş kurucu metot:
  Kitap.fromMap(Map<String,dynamic> map){.......} oluşturuyoruz. sonra readTumKitaplar() metotu içinde for döngüsü ile map içindeki tüm kitapları gezip tek tek kitap nesnesine dönüştürüp bir kitap listesi içine koyup listeyi return ile geri döndürüyoruz.
 
  34=> KitaplarSayfasi() nda Future<void> tumKitaplariGetir()async{} fonksiyonu ile tüm kitapları veritabanından çeken bir fonk. oluşturuyoruz ve içinde readTumKitaplar() fonk. kullanıyoruz . KitaplarSayfasi() içinde  bir Kitap listesi olşturuyoruz.  gelen kitap listesini bu listeye atıyoruz.
  ---------_buildBody()
- 35=>Listelenen kitapları ekranda göstermek için _buildBody oluşturuyoruz.
-  Liste gelene kadar initState kullanmak yerine FutureBuilder(future: , builder:) kullanıyoruz. futureye atadığımız fonk(verileri çekme işlemi tumKitaplarıGetir()) bitince buildere atadığmız (ekranı çizme ) fonk. çalışır.ListView.builder kullanacağız
+ 35=> Listelenen kitapları ekranda göstermek için _buildBody oluşturuyoruz.
+  Liste gelene kadar initState kullanmak yerine FutureBuilder(future: , builder:) kullanıyoruz. futureye atadığımız fonk(verileri çekme işlemi tumKitaplarıGetir()) bitince buildere atadığmız (ekranı çizme ) fonk. çalışır.ListView.builder kullanacağız ve ekranı çizdireceğiz.
+-----------update
+35=> Kitapları güncellemek için  db.update(tablo adı,Map<String, Object?> values) fonksiyonun Future<int> updateKitap (Kitap kitap){}  metodu içinde kullanıyoruz. Güncellenecek kitabı alır geriye güncellenen sütun kadar int değeri döndürür.güncelleme olmazsa geriye 0 değeri biz döndürürüz. 
+36=>db.update(tablo adı,kitap.toMap, where "_idKitaplar = ?",whereArgs:[kitap.id]) burada where yani kitap tablosunun id sütunu;  ? ise bir bilinmeyen değere eşitle, whereArgs ise bilimeyen değere karşılık gelen sütunu seçiyoruz liste alır birden fazla soru işareti olursa birden fazla değer alır.
+37=> listedeki elemanları güncelleme yapmak için List.tile içine iconButton koyuyoruz.
 
 
 
