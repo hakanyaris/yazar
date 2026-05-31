@@ -46,8 +46,9 @@ import 'package:sqflite/sqflite.dart'; otomatik eklenir
 25=> _veriTabaniGetir fonksiyonunun içine  dosyaYolu(getDatabasesPath()) ardından veritananın  cep telefonu hafızasında oluşturması veya mevcutsa açması için  openDatabase(veriTabaiYolu,version:1,onCreate: ,onUpgrade:)   fonk çağırıyoruz onCreate fonk veritabanı oluşturulmamışsa tabloları oluşturacak fonksiyounu atayacağız   
 26=> oncreate : (Database db,int version)  db ve version parametrelerini alıyor future döndürüyor.
 27=> oncreate içine { db.execute("""   """) } ekliyoruz . execute yani oluşturulacak tablonun sql kodlarını(19 adımdaki) kopyalayıp buraday yapıştırıyoruz.üç tane tırnak arasına yapıştırılan her şey string olarak algılanır bu da string istiyor bizden  
+"id" yerine String  _idKitaplar="id" şeklinde YerelVeriTabani içinde tanımlayıp  sql kodlarında "id" yerine  _idKitaplar kullanıyoruz.
 28=> tabloadı id ,isim ,olusturulmaTarihi gibi verilerin adlarını silip   _veriTabaniGetir fonksiyorun içinde String  olarak tutuyoruz. String _kitaplarTabloAdi="Kitaplar; Stirng _kiplarId ="id"; gibi
-------------CRUD Create (Create,Read,Upgrade,Delete)
+------------ Kitaplar CRUD Create (Create,Read,Upgrade,Delete)
 29=> Tabloya kitap eklemek için Create fonksiyonu oluşturuyoruz. Future<int> createKİtap(Kitap kitap) 
 burada db.insert(tabloADI, Map<String,dynamic>) kitap verilerini map a çevirmek için  Kitap sınıfı içinde 
 Map<String,object> toMap  fonsiyonu yazıyoruz  kitap.toMap fonksiyona ekliyoruz .insert fonksiyonu geriye eklenen verinin id döndürüyor.
@@ -85,8 +86,8 @@ List<Map<String,dynamic>>> kitaplarMap= await db.query(tabloadi)
 48=>kurucu metotta kitapId ve baslık alacağız içerik ise boş string atayacağız bolum ilk oluşturulunca içeriği boş isyitoru sonradan içerikDetay sayfasi ile dolduracağız.
 49=>  toMap  fonk .ve fromMap kurucu metodu oluşturuyoruz.
 --------------Bölüm sınıfı için  sqlite tablo kodu oluşturma
-50=> Yine bu sınıfla ilgili tablo kodu almak için bu projemizi emilatörde çalıştırıyoruz.Android stüdyoda bu emülotora ait dosyalara ulaşıp yazar.db  massaüstüne idirip  program ile çalıştırıyoruz.
-51=> Üst menüde Database Structure menüsüne basıp tablo oluştur kısmmını tıklıyoruz.
+50=> Yine bu sınıfla ilgili tablo kodu almak için bu projemizi emilatörde çalıştırıyoruz.Android stüdyoda bu emülotora ait dosyalara data içinden ulaşıp yazar.db  masaüstüne indirip  program ile çalıştırıyoruz.
+51=> Üst menüde Database Structure menüsüne basıp tablo oluştur kısmını tıklıyoruz.
 52=> tablo adını bolumler yazıp ekle tıklayıp id  İNT ,kitapId İNT ,baslik TEXT , icerik TEXT ,olusturulmaTarihi TEXT  EKLİYORUZ.
 53=>  id içi NN(NOT NULL) , Biricil anahtar(Primary key) ,Otomatik Arttırma(Auto Implement),Benzersiz(Unique)
 54=> kitapId NN(NOT NULL), baslik NN(NOT NULL), icerik , 
@@ -99,7 +100,12 @@ List<Map<String,dynamic>>> kitaplarMap= await db.query(tabloadi)
       (On update cascade mesela kitaplar tablosundaki ekli bir kitabın id 1 iken 15 oldu bölümler tablosundaki 1 kitaba bağlı bölümler de 15 kitaba bağlı olarak güncelle bunu yapmasak bölümler id 1 kalacak  )(on delete cascade ise kitap silinirse o kitaba ait bölümleri de sil)
       aşağıda oluşan kodu kopyalıyoruz
       OK basıp tabloyu oluşturuyoruz
-57=> 
+57=> 27 adımdaki gibi  String _idBölümTabloAdi="bolumler"; String  _iBbolumler="id"; baslik icerik olusturulmaTarihi  hepsini Stringte tutuyoruz
+58=> 57 adımdaki kopyaladığımız kodları yapıştırıp  değişkenleri 57 adımdaki stringlerle değiştiriyoruz.
+------------Bölümler CRUD Create (Create,Read,Upgrade,Delete)
+59=> kitaplara ait  _yerelVereTabani() tüm create , read ,upgrade, delete fonksiyoları kopyalayıp kitap yazan yerlei bolum diyedeğişitip düzenliyoruz.
+60=> bölümleri veritabanında okuyup çekerken kitap  read fonk farklı olarak tüm bölümlere ait bölümleri değil seçilen kitaba ait bölümleri göstermesi için Future<List<Bolum>> readTumBolumler(int kitapId) bir kitap id  istiyoruz.
+61=> db.query( tabloadi, where:"$_kiyapIdBolumler= *" whereArgs: [kitapId])  where  ve whereArgs ekleyerek filitreleme yapıp kitapId  ye göre bölmleri çekiyoruz.
   
  
 
