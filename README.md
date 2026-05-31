@@ -22,7 +22,7 @@ samples, guidance on mobile development, and a full API reference.
 5=> KiapEkle fonksiyonunun içinde de _pencereAc() fonksinyonu tanımladık.
 6=> pencereAc Fonsiyonn içine ShowDialog  onun da içine AlertDialog fonk. koyuyoruz Alert dilaloga kitap eklemek için bir TextField()  ,iki tane buton koyuyoruz(TextButton) koyuyoruz iptal ve kaydet 
 7=> Texfiel yazılan değeri String sonuc  değerine eşitlerdik sonuc değerini  return showDilog<String> diyerek  ve  Future<String>?>  _pencereAc  diyerek fonsiyoru geriye String döndürür şekilde ayarladık.
-8=> Kitap Sınıfı oluşturuyoruz Model klasörü açıp içine Kitap sınıfı oluşturuyoruz. int? id,Sring isim ,DateTime olusturulmaTarihi ve kurucu metot;
+8=> Kitap Sınıfı oluşturuyoruz Model klasörü açıp içine Kitap sınıfı oluşturuyoruz. int? id,Sring isim ,DateTime olusturulmaTarihi ve kurucu metot;(id null olabilir yaptık çünkü id kullanıcdan almıyoruz(kurucu mettotta) veritabanı otomatik atıyor)
 9=>_kitapEkle() FONKSİYONUN içine  yeni birkitap nesenesi oluştrup _pencereAc dan gelen sonuc (kitap adı) değerini kitap adı olarak veriyoruz.işlem bitince boş bir setState(){} oluşturuyoruz ki yeni eklenen kitap ekranda gösterilsin
 -------------SQFLİTE EKLEME------------
 10=> db Browser for sqLite windows versionunu indiriyoruz bu sql kodarını otomatik olarak oluşturur.sqflite eklentisi  telfon hafızasına veri kaydetmeye yarar
@@ -67,9 +67,43 @@ List<Map<String,dynamic>>> kitaplarMap= await db.query(tabloadi)
  35=> Listelenen kitapları ekranda göstermek için _buildBody oluşturuyoruz.
   Liste gelene kadar initState kullanmak yerine FutureBuilder(future: , builder:) kullanıyoruz. futureye atadığımız fonk(verileri çekme işlemi tumKitaplarıGetir()) bitince buildere atadığmız (ekranı çizme ) fonk. çalışır.ListView.builder kullanacağız ve ekranı çizdireceğiz.
 -----------update
-35=> Kitapları güncellemek için  db.update(tablo adı,Map<String, Object?> values) fonksiyonun Future<int> updateKitap (Kitap kitap){}  metodu içinde kullanıyoruz. Güncellenecek kitabı alır geriye güncellenen sütun kadar int değeri döndürür.güncelleme olmazsa geriye 0 değeri biz döndürürüz. 
-36=>db.update(tablo adı,kitap.toMap, where "_idKitaplar = ?",whereArgs:[kitap.id]) burada where yani kitap tablosunun id sütunu;  ? ise bir bilinmeyen değere eşitle, whereArgs ise bilimeyen değere karşılık gelen sütunu seçiyoruz liste alır birden fazla soru işareti olursa birden fazla değer alır.
-37=> listedeki elemanları güncelleme yapmak için List.tile içine iconButton koyuyoruz.
+35=> Kitapları güncellemek için  Future<int> updateKitap(Kitap kitap){} oluşturuyoruz içinde db.update(tablo adı,Map<String, Object?> values)  kullanıyoruz. Güncellenecek kitabı alır geriye güncellenen sütun kadar int değeri döndürür.güncelleme olmazsa geriye 0 değeri biz döndürürüz. 
+36=>db.update(tablo adı,kitap.toMap, where "_idKitaplar = ?",whereArgs:[kitap.id]) burada where yani kitap tablosunun id sütunu;  ? ise bir bilinmeyen değere eşitle, whereArgs ise bilimeyen değere karşılık gelen sütunu seçiyoruz liste alır birden fazla soru işareti olursa birden fazla değer alır.(wheere kullanmazsak bütün kitaplar güncellenir.)
+37=> listedeki elemanları güncelleme yapmak için listView.builder içinde  List.tile içine iconButton koyuyoruz.onPresed  içine void _kitapGUncelleme(context,index) fonk tanımlıyoruz.index o anki kitap id listView.builder den alıyoruz context ise mevcut _pencereAc(BuildContext context) fonk. içindeki showDialog için alıyoruz.
+38=> _kitapGUncelleme(context,index) fonk içinde yeni bir Kitap nesnesi oluşturup onu indeks ile listview.builderden dönen kitapa eşitliyoruz. 
+39=> _pencereAc fonk dönen yeni kitap adını Kitap nesnesinin adına eşitliyoruz
+40=> bu kitabı Future<int> updateKitap(Kitap kitap) fonsiyonuna gönderiyoruz. fonk. dönüş degeri int 0 büyükse setState çalıştır fonk. yazıyoruz. ekranı yeniden çizdiriyoruz
+-------------------Delete
+41=> Future<int> deleteKitap(Kitap kitap){} fonk. oluşturuyOruz geriye silinen satır sayısını döndürecek . db.delete(tablo adı, where "_idKitaplar = ?",whereArgs:[kitap.id])  içine tanımlıyoruz. where de id si where args da verilen kitabı sil . db boşsa o döndür.(where kullanmazsak bütün kitaplar silinir.)
+42=> listTile içinde Bir iconButton daha oluşturuyoruz. Butona tıklanınca void _kisapSil(int index) fonk koyuyoruz(onpress içine) Bir kitap nesnesi oluşturup index ile gelen kitaba eşitliyoruz.
+43=> _Future<int> deleteKitap(Kitap kitap) fonk çağırıp kitap nesnesini buraya gönderiyoruz
+44=> Future<int> deleteKitap(Kitap kitap) dönüş değeri 0 büyükse setState çalıştırıp ekranı yeniden çizdiriyoruz.
+----------BölümModel Sınıfı(ilişkili tablolar)
+45=> Kitaplara ait bölüm atayacağız bunu için faklı aynı sql dosyası içinde bölüm adında bir tablo olşturacağız ve bu tabloları ilişkili hale getireceğiz.
+46=> Bolum clası oluşturuyoruz.önki nokta burada bir kitapId kullancağız çünkü her bölümün bir kitabı vardır.
+47=> int? id , int kitapId, String baslik ,String icerik 
+48=>kurucu metotta kitapId ve baslık alacağız içerik ise boş string atayacağız bolum ilk oluşturulunca içeriği boş isyitoru sonradan içerikDetay sayfasi ile dolduracağız.
+49=>  toMap  fonk .ve fromMap kurucu metodu oluşturuyoruz.
+--------------Bölüm sınıfı için  sqlite tablo kodu oluşturma
+50=> Yine bu sınıfla ilgili tablo kodu almak için bu projemizi emilatörde çalıştırıyoruz.Android stüdyoda bu emülotora ait dosyalara ulaşıp yazar.db  massaüstüne idirip  program ile çalıştırıyoruz.
+51=> Üst menüde Database Structure menüsüne basıp tablo oluştur kısmmını tıklıyoruz.
+52=> tablo adını bolumler yazıp ekle tıklayıp id  İNT ,kitapId İNT ,baslik TEXT , icerik TEXT ,olusturulmaTarihi TEXT  EKLİYORUZ.
+53=>  id içi NN(NOT NULL) , Biricil anahtar(Primary key) ,Otomatik Arttırma(Auto Implement),Benzersiz(Unique)
+54=> kitapId NN(NOT NULL), baslik NN(NOT NULL), icerik , 
+55=> olusturulma tarihi VARSAYILAN(DEFAULT) kısmına CURRENT_TIMESTAMP yazıyoruz. Bolum sınıfmızda oluşturulma tarihi adından bir değerimiz yok bunu direkt database kendisi otomatik olarak kendi içinde otomatik değer atasın
+56=> Tabloları bağlama  kitaplar tablomuz ile bölüm tablomuzu bağlayacağız.
+      Yabancı Anahtar(Foreign Key) kitapId satırı kısmını çift tıklıyoruz tablolarda kitapalar tablosu seç
+      ikinci seçim alanında id ceçiyorum 
+      ( yani kitapId yi kitaplar tablosundaki id ile bağla)
+      yanadaki boş satıra ON UPDATE CASCATE ON DELETE CASCATE    yazıyoruz
+      (On update cascade mesela kitaplar tablosundaki ekli bir kitabın id 1 iken 15 oldu bölümler tablosundaki 1 kitaba bağlı bölümler de 15 kitaba bağlı olarak güncelle bunu yapmasak bölümler id 1 kalacak  )(on delete cascade ise kitap silinirse o kitaba ait bölümleri de sil)
+      aşağıda oluşan kodu kopyalıyoruz
+      OK basıp tabloyu oluşturuyoruz
+57=> 
+  
+ 
+
+
 
 
 
