@@ -106,7 +106,13 @@ List<Map<String,dynamic>>> kitaplarMap= await db.query(tabloadi)
 59=> kitaplara ait  _yerelVereTabani() tüm create , read ,upgrade, delete fonksiyoları kopyalayıp kitap yazan yerlei bolum diyedeğişitip düzenliyoruz.
 60=> bölümleri veritabanında okuyup çekerken kitap  read fonk farklı olarak tüm bölümlere ait bölümleri değil seçilen kitaba ait bölümleri göstermesi için Future<List<Bolum>> readTumBolumler(int kitapId) bir kitap id  istiyoruz.
 61=> db.query( tabloadi, where:"$_kiyapIdBolumler= *" whereArgs: [kitapId])  where  ve whereArgs ekleyerek filitreleme yapıp kitapId  ye göre bölmleri çekiyoruz.
-  
+-------------Bölümler Sayfası VİEW
+62=> view sayfası altında bolumler_Sayfasi.dart açıyoruz Stateful Widget
+63=> bu sayfanın kurucu metotunda tıklanan kitap alacağız yani  final Kitap _kitap nesnesi oluşturup bunu kurucu metotta this._kitap ile alıyoruz.
+64=> listTile içideki kitabı tıklayınca bölümler açılacağından listTile içine onTap(){_bolumlerSayfasiAc(context ,index)} açıyoruz 
+65=>  KitaplarSayfasi içinde void _bolumlerSayfasiAc(BuildContext context, in index){}  metodu ile bolum sayfasında yönlendiriyoruz(MaterialPageRoute  ve Navigator.push).  Bu sayfada BolumlerSayfasi(this.kitap) kitap nesnesi göndermek için index değerini aldık
+parantez içide (_kitaplar[index]) kitaplar listesinde  index değerindeki kitabı gönderiyoruz.
+65=> kitapSayfasini komple bölüm sayfasında yapıştırıyoruz kitap yazan yerlere bölüm yazıyoruz
  
 
 
