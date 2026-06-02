@@ -102,7 +102,7 @@ List<Map<String,dynamic>>> kitaplarMap= await db.query(tabloadi)
       OK basıp tabloyu oluşturuyoruz
 57=> 27 adımdaki gibi  String _idBölümTabloAdi="bolumler"; String  _iBbolumler="id"; baslik icerik olusturulmaTarihi  hepsini Stringte tutuyoruz
 58=> 57 adımdaki kopyaladığımız kodları yapıştırıp  değişkenleri 57 adımdaki stringlerle değiştiriyoruz.
-------------Bölümler CRUD Create (Create,Read,Upgrade,Delete)
+------------Bölümler CRUD Create (Create,Read,Upgrade,Delete)  _yerelVereTabani()
 59=> kitaplara ait  _yerelVereTabani() tüm create , read ,upgrade, delete fonksiyoları kopyalayıp kitap yazan yerlei bolum diyedeğişitip düzenliyoruz.
 60=> bölümleri veritabanında okuyup çekerken kitap  read fonk farklı olarak tüm bölümlere ait bölümleri değil seçilen kitaba ait bölümleri göstermesi için Future<List<Bolum>> readTumBolumler(int kitapId) bir kitap id  istiyoruz.
 61=> db.query( tabloadi, where:"$_kiyapIdBolumler= *" whereArgs: [kitapId])  where  ve whereArgs ekleyerek filitreleme yapıp kitapId  ye göre bölmleri çekiyoruz.
@@ -112,8 +112,28 @@ List<Map<String,dynamic>>> kitaplarMap= await db.query(tabloadi)
 64=> listTile içideki kitabı tıklayınca bölümler açılacağından listTile içine onTap(){_bolumlerSayfasiAc(context ,index)} açıyoruz 
 65=>  KitaplarSayfasi içinde void _bolumlerSayfasiAc(BuildContext context, in index){}  metodu ile bolum sayfasında yönlendiriyoruz(MaterialPageRoute  ve Navigator.push).  Bu sayfada BolumlerSayfasi(this.kitap) kitap nesnesi göndermek için index değerini aldık
 parantez içide (_kitaplar[index]) kitaplar listesinde  index değerindeki kitabı gönderiyoruz.
-65=> kitapSayfasini komple bölüm sayfasında yapıştırıyoruz kitap yazan yerlere bölüm yazıyoruz
- 
+65=> kitapSayfasini komple bölüm sayfasında yapıştırıyoruz kitap yazan yerlere bölüm yazıyoruz.
+66=> _bolumlerSayfasiniAc() ı _bolumDetaySayfasiniAc() olarak değiştirip bölüm tıklanınca Bölüme ait içerik görüncek bu sayfayı oluşturacağız.
+-------------Bolümler tablosu 
+   Veri tabanı ilk kez oluşturulduğunda (onCreate) kitap tablosu oluşturulmuştu .Fakat bolümler tablosunu yerel veritabanında oluşturlmamıştı.bolumler tablosunu sonradan veritabanına eklemek için onUpgrade: kısmında ve version: kısmında işlem yapacağız  (.........)
+67=>şimdilik cep telefonundan data kısmındaki yazar.db siliyoruz veri tabanı silindiği için sıfırdan yeni bir veritabanı oluşturacak ve veritabanı bolumler tablosunu da oluşturacak
+-------------Bölüm Detay sayfası view
+    bir kitaba girdikten sonra o kitaba ait bölümler listelendi.Burada herhangi bir bölüme tıkladığımızda  kitabın bölümüne ait yazdığımız içerik görünecek .
+68=> view klasörü altında bolum_detay_sayfasi.dart oluşturuyoruz.BolumDetaySayfa()
+69=> BolumDetaySayfasi() kurucu metotunda bir tane final Bölüm _bolum; ile this.bolum isteyeceğiz.Hangi bölümün detayını gösterecektek onu alacağız
+70=> appbara _bolum.baslik , appbarda bir Iconbuton olacak bolum içeriği kaydetmek için,onpress içinde _icerigiKaydet async() fonk tanımlıyoruz.
+71=> body içinde bir textField olacak texfield decoration kısmını düzenliyoruz border deriyoruz. maxLines:1000 ile tam sayfayı kaplamasını sağlıyoruz.
+72=> 66 adımdaki_bolumDetaySayfasiniAc() sayfasını düzenleyip listTile tıklanınca bu sayfaya gitmesi için materialPageRoute ile ayarlıyoruz.
+73=>  70 adımdaki _icerigiKaydet async () yani buton tıklanınca Bölüm içindeki içerik güncelleneip texfieldde yazdığımız yazılar kaydolacak 
+74=> TextEditingController() ile YerelVeriTabani clasını burada oluşturuyoruz.bölüme ait önceli içerik texfield de görünmesi için _icerikControler.text = _bolum.icerik şek. düzenliyoruz 
+75=> _bolum.icerik = _icerikController.text;  contoller ile gelen içeriği bolüm nesnesinin icerik kısmına veriyoruz
+76=> _yerelVeriTabani.updatebolum(_bolum); yeni güncel bölümü veri tabanında güncellemek için
+--------------------Kategori ekleme(Kitaplara) 
+Her Kitaba bir kategori ekleyeceğiz Kategori sınıf oluşturmuyoruz bu yüzden kategori tablosunada gerek yok Kitap clası iine kategori diye bir  değişken ekleyeceğiz.
+
+77 => kategori bilgilerini tutan bir sabitler sınıfı oluşturuyoruz. lib altında sabitler.dart clası oluşturduk
+78 => satatic const Map<int,String> kategoriler={0:"Genel,1:"Roman....} kategorileri dışarıdan kolayca erişebileceğimiz map listesi oluşturyoruz.
+78=> Kitap sınıfına gidip int kategori; adında bir alan ekliyoruz. kurucu metotta kategoriyi alıyoruz. toMap ve fromMap a da kategori eklioyuz.
 
 
 
