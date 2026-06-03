@@ -129,10 +129,12 @@ parantez içide (_kitaplar[index]) kitaplar listesinde  index değerindeki kitab
 75=> _bolum.icerik = _icerikController.text;  contoller ile gelen içeriği bolüm nesnesinin icerik kısmına veriyoruz
 76=> _yerelVeriTabani.updatebolum(_bolum); yeni güncel bölümü veri tabanında güncellemek için
 --------------------Kategori ekleme(Kitaplara) 
-Her Kitaba bir kategori ekleyeceğiz Kategori sınıf oluşturmuyoruz bu yüzden kategori tablosunada gerek yok Kitap clası iine kategori diye bir  değişken ekleyeceğiz.
+Her Kitaba bir kategori ekleyeceğiz Kategori sınıf oluşturmuyoruz bu yüzden kategori tablosunada gerek yok Kitap clası içine kategori diye bir  değişken ekleyeceğiz.
 
 77 => kategori bilgilerini tutan bir sabitler sınıfı oluşturuyoruz. lib altında sabitler.dart clası oluşturduk
 78 => satatic const Map<int,String> kategoriler={0:"Genel,1:"Roman....} kategorileri dışarıdan kolayca erişebileceğimiz map listesi oluşturyoruz.
+NOT: NEDEN LİSTE DEĞİLDE MAP OLUŞTURUYORUZ?ÇÜNKÜ ileride veritabanında tutlacak değer "genel" değil int 0 rakamı olacak.İleride "genel" i "tümü" diye değiştirisek yapmamız gereken sadece sabitler clası içinde düzeltmek vertabanında tüm kitaplara gidip tek tek kategorileri değişmemize gerek kalmayacak.
+
 78=> Kitap sınıfına gidip int kategori; adında bir alan ekliyoruz. kurucu metotta kategoriyi alıyoruz. toMap ve fromMap a da kategori eklioyuz.
 79=> kurucu metotu değiştirdiğimiz için kitap nesnesinin çağrıldığı yerler hata veriyor. kitaplar_sayfasi.dart kategori bilgisini almak için kitap eklenirken  dropdown ile kategori bilgisine de  alacağız 
 80=>  _kitaplar_sayfasi.dart içide _pencereAc fonk gidip Texfield i column ile sarmalyıp DropDown koyuyoruz.
@@ -160,7 +162,22 @@ Her Kitaba bir kategori ekleyeceğiz Kategori sınıf oluşturmuyoruz bu yüzden
 kitap.kategori değerlerini _pencereAc  gönderiyoruz.
 
 87=> KitapGuncelle ile açılan pencerede bilgilde bir değişiklik olmadan onayla butonuna basarsak yine veritabanına gidip gereksiz yere aynı bilgiler yeniden işlencek bunu önlemek için isim veya kategori değişmemişse veritabanına gidilmesin KitapGuncelle içinde mevcut kitap adı ve kategori adı aynıysa  veritabanı güncelleme işlemeri başlamasın if() yazıyoruz.(PERFORMANS DÜZENLEMESİ)
+-----------------Kategori satırını  _yerel_veri_tabani.dart (sqlite) ekleme 
+     YerelVeriTabanı clasına gidip kategori satırını kitap tablosuna eklemek için düzenlemeler yapacağız
+88=> oncreate parametresine atanan  _tabloOlustur fonk içine "kategori" INTEGER DEFAULT 0 ekliyoruz. 
+ oncreate kısmı  tablo ilk oluşturulurken çalıştırıldığı için satır veritabanına eklenmeyecektir.
+ bu yüzden onUpgrade parametresini kullanmalıyız
 
+89=> onUpgrade: parametresine _tabloGuncelle(Database db ,int oldVersion, int newVersion) fonk. atıyoruz. 
+db bizim veritabanı dosyamızi oldVersion veritabanımızdaki version numarası, newVersion şimdi atadığımız version numarası.fonksiyonun içine sql komutu ile kategori satırı eklemek için
+
+90=>await db.execute("ALTER TABLE "Kitaplar" ADD COLUMN "kategori" INTEGER DEFAULT 0" ); DEFAULT 0 Vermemizin nedeni önceden veritabanına eklenen kitaplarda kategori sutunu null olarak çalışırsa program hata verecek bu yüzden önceki kitaplar kategori 1 olacak yani "genel" olacak
+
+bunu eklesek bile tablo yine veritabanına eklenmeyecek çünkü version:1 hala 1  biz burada 2 yapmalıyız ki onUpgrade  tetiklenip çalışsın
+Yani onUpgrade çalışması için cihazın veri tabanı ile bizim simdi girdiğimiz version farklı olması gerekiyor aynı olursa çalışmaz.
+-----------------------onUpgrade Tabloya kategori dışında başka bir değişken daha eklemek 
+91=>YerelVeriTabanı içinde _tabloGuncelle fonk önceden katergori satırı ekleyen bir sql komutu(88 adım )yazmıştık.
+Eğer ikinci bir satır(mesele renk) eklemek istersek _tabloGuncelle içine ikinci bir db.execute ile  satır ekleme komutu yazacağız. ama opUpgrade çalışınca _tabloGuncelle de çalışlacak ve kategori satırını tekrar eklemeye çalışacak ve program hata verecek.
 
 
 
