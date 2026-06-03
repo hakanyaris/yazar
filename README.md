@@ -21,7 +21,7 @@ samples, guidance on mobile development, and a full API reference.
 ------- kitapEkle flotainActionButton
 5=> KiapEkle fonksiyonunun içinde de _pencereAc() fonksinyonu tanımladık.
 6=> pencereAc Fonsiyonn içine ShowDialog  onun da içine AlertDialog fonk. koyuyoruz Alert dilaloga kitap eklemek için bir TextField()  ,iki tane buton koyuyoruz(TextButton) koyuyoruz iptal ve kaydet 
-7=> Texfiel yazılan değeri String sonuc  değerine eşitlerdik sonuc değerini  return showDilog<String> diyerek  ve  Future<String>?>  _pencereAc  diyerek fonsiyoru geriye String döndürür şekilde ayarladık.
+7=> Texfiel yazılan değeri _pecereAc içinde  String sonuc  değerine eşitlerdik sonuc değerini  return showDilog<String> diyerek  ve  Future<String>?>  _pencereAc  diyerek fonsiyoru geriye String döndürür şekilde ayarladık.
 8=> Kitap Sınıfı oluşturuyoruz Model klasörü açıp içine Kitap sınıfı oluşturuyoruz. int? id,Sring isim ,DateTime olusturulmaTarihi ve kurucu metot;(id null olabilir yaptık çünkü id kullanıcdan almıyoruz(kurucu mettotta) veritabanı otomatik atıyor)
 9=>_kitapEkle() FONKSİYONUN içine  yeni birkitap nesenesi oluştrup _pencereAc dan gelen sonuc (kitap adı) değerini kitap adı olarak veriyoruz.işlem bitince boş bir setState(){} oluşturuyoruz ki yeni eklenen kitap ekranda gösterilsin
 -------------SQFLİTE EKLEME------------
@@ -134,9 +134,32 @@ Her Kitaba bir kategori ekleyeceğiz Kategori sınıf oluşturmuyoruz bu yüzden
 77 => kategori bilgilerini tutan bir sabitler sınıfı oluşturuyoruz. lib altında sabitler.dart clası oluşturduk
 78 => satatic const Map<int,String> kategoriler={0:"Genel,1:"Roman....} kategorileri dışarıdan kolayca erişebileceğimiz map listesi oluşturyoruz.
 78=> Kitap sınıfına gidip int kategori; adında bir alan ekliyoruz. kurucu metotta kategoriyi alıyoruz. toMap ve fromMap a da kategori eklioyuz.
+79=> kurucu metotu değiştirdiğimiz için kitap nesnesinin çağrıldığı yerler hata veriyor. kitaplar_sayfasi.dart kategori bilgisini almak için kitap eklenirken  dropdown ile kategori bilgisine de  alacağız 
+80=>  _kitaplar_sayfasi.dart içide _pencereAc fonk gidip Texfield i column ile sarmalyıp DropDown koyuyoruz.
+81=>  DropDown  menü de yapılan değişikliklerin ekrana yansıması için setState ekliyoruz fakat bu yeterli değil çünkü biz  DropDown ı ShowDialog ile yeni bir açılır menü açtığımız için oraya etki etmiyor.
+ Show dialog aslında yeni bir sayfa açıyor ve ayrı bir setStatesi olması gerekiyor.
+ Bunun için StatefulBuilder()  widgeti kullanıyoruz geriye widget döndürür .
+82=> ShowDialog artık hem kitapadı hem de kategori bilgisi döndürecek .Yani bir liste döndürecek.Bunu düzenlemek için 7. adımda tanımladığımız _pencereAc fonk ve  içindeki ShowDialog  String değil Liste olacak
+  return showDilog<List<dynamic>> diyerek  ve  Future<List<dynamic>>?>  _pencereAc  diyerek fonsiyoru geriye List<dynamic> döndürür şekilde ayarladık.
 
+83=> 9. adımda _pencereAc fonk. içine alam kitapEkle() fonk.  _kitapGuncelle()  fonk. düzenliyoruz.
+84=> kitapGuncelle fonk bir değişiklik yapacağız. KitapGüncelle butonuna basınca mevcut kitabın adı ve kategorisi ShowDialogda görünmüyordu .Bunu için pencereAc fonk güncelliyoruz ;
+ Future<List<dynamic>?>  _pencereAc(
+    BuildContext context, {
+    String mevcutIsim = "",
+    int mevcutKategori = 0,
+  })
 
+  yani isteğe bağlı olarak iki değer alıyoruz .
 
+85=> ve textField e isimController oluşturup  ;
+ TextEditingController isimController = TextEditingController( text: mevcutIsim, ); geriye sonuc değil 
+ isimController.text.trim(); döndürüyoruz
+
+86=> _kitapGuncelle() fonk içindeki _pencereAc fonk düzenliyoruz. _kitapGuncelle() içindeki Kitap.isim ve 
+kitap.kategori değerlerini _pencereAc  gönderiyoruz.
+
+87=> KitapGuncelle ile açılan pencerede bilgilde bir değişiklik olmadan onayla butonuna basarsak yine veritabanına gidip gereksiz yere aynı bilgiler yeniden işlencek bunu önlemek için isim veya kategori değişmemişse veritabanına gidilmesin KitapGuncelle içinde mevcut kitap adı ve kategori adı aynıysa  veritabanı güncelleme işlemeri başlamasın if() yazıyoruz.(PERFORMANS DÜZENLEMESİ)
 
 
 
