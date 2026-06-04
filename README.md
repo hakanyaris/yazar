@@ -193,7 +193,9 @@ _tumKategoriler.addAll(Sabitler.kategoriler.keys);  _1 değerininde olduğu yeni
  yerel_veri_tabani.dart
 96=> 33. adımdaki Future<List<Kitap>> _readTumKitaplar(int kategoriId)  fonk int kategoriId isteyeceğiz.KategoriId göre listeleyecepğiz
 
-97=> db.duery e where :"kategoriId = ?" whereArgs:[kategoriId] ekleyerek  AnaSayfadaki listelemeyi bu şekilde filtreliyoruz. 
+97=> db.duery e where :"kategoriId = ?" whereArgs:[kategoriId] ekleyerek  AnaSayfadaki listelemeyi bu şekilde filtreliyoruz.
+
+98=> 
 
 
 
