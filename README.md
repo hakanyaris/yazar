@@ -57,7 +57,7 @@ Map<String,object> toMap  fonsiyonu yazıyoruz  kitap.toMap fonksiyona ekliyoruz
 YerelVeriTabani yerelVeriTabani=YerelVeriTabani(); ekliyoruz 
 31=> KitaplarSayfasi() nda _kitapEkle() fonksiyonu içinde çağırdığımız createKİtap(Kitap kitap) fonksiyonuna showdialogdan gelen kitap Adi ile bir kitap nesnesi oluşturup bunu  gönderiyoruz
 ------------Read
-32=> Veritabanına eklenen kitapları listelemek için Future<List<Kitap>> readTumKitaplar() fonksiyounun  oluşturuyotuz.db.query fonksiyonunu kullanıyoruz bu map türünde bir liste döndürür.
+32=> Veritabanına eklenen kitapları listelemek için Future<List<Kitap>> _readTumKitaplar() fonksiyounun  oluşturuyotuz.db.query fonksiyonunu kullanıyoruz bu map türünde bir liste döndürür.
 List<Map<String,dynamic>>> kitaplarMap= await db.query(tabloadi)
 33=> Geriye map tipinde bir liste döndüğü için bu map listesini Kitap modeline çeviren Kitap sınıfı içinde 
  isimlendirilmiş kurucu metot:
@@ -179,6 +179,23 @@ Yani onUpgrade çalışması için cihazın veri tabanı ile bizim simdi girdiğ
 91=>YerelVeriTabanı içinde _tabloGuncelle fonk önceden katergori satırı ekleyen bir sql komutu(88 adım )yazmıştık.
 Eğer ikinci bir satır(mesele renk) eklemek istersek _tabloGuncelle içine ikinci bir db.execute ile  satır ekleme komutu yazacağız. ama opUpgrade çalışınca _tabloGuncelle de çalışlacak ve kategori satırını tekrar eklemeye çalışacak ve program hata verecek. 
 Bunu önlemek için eklenecek her bir sql komutunu bir string listesine kaydedip for döngüsü içinde bir kod yazıyoruz _tabloGuncelle() içinde .
+
+--------------------Ana ekranda kitapları listelerken Kategoriye göre listeleyeceğiz (Filtre where) 
+   KitaplarSayfasında () view 
+92=> _buildKategoriFiltresi()  fonk. oluşturup ana sayfada en üstte göstermek için _buildListView içinde column ile sarmalayıp içine  dropDown koyuyuoruz(_perncereAc içindeki Dropdown ).ListViewe.builderi expanded ile sarmalıyoruz.
+93=> dropDown value değerini tutan int _secilenDegeri=0;  kitaplarSayfasında oluşturuyoruz.
+94=> Listede Hepsi değeri yok bu yüzden  List<int> _tumKategoriler = [-1];  listesi oluşturup initState içinde 
+_tumKategoriler.addAll(Sabitler.kategoriler.keys);  _1 değerininde olduğu yeni bir liste verir.
+
+95=>_buildKategoriFiltresi() fonk  içindeki listeyi _tumKategoriler den çekiyoruz DropDownMenuItem in  child kısmına  Text () içinde kategoriId ==-1 ise "Hepsi" değilse Sabitler.kategoriler[kategoriId] ?? "" olacak
+
+------------------Kategoriye göre listeleme veritabanı kodu düzenleme
+ yerel_veri_tabani.dart
+96=> 33. adımdaki Future<List<Kitap>> _readTumKitaplar(int kategoriId)  fonk int kategoriId isteyeceğiz.KategoriId göre listeleyecepğiz
+
+97=> db.duery e where :"kategoriId = ?" whereArgs:[kategoriId] ekleyerek  AnaSayfadaki listelemeyi bu şekilde filtreliyoruz. 
+
+
 
 
 

@@ -13,6 +13,15 @@ class _KitaplarSayfasiState extends State<KitaplarSayfasi> {
   YerelVeriTabani _yerelVeriTabani = YerelVeriTabani();
 
   List<Kitap> _kitaplar = [];
+  int _secilenKategori = -1;
+  List<int> _tumKategoriler = [-1];
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _tumKategoriler.addAll(Sabitler.kategoriler.keys);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -46,9 +55,49 @@ class _KitaplarSayfasiState extends State<KitaplarSayfasi> {
       return Center(child: Text("Henüz kitap eklenmemiş."));
     }
 
-    return ListView.builder(
-      itemCount: _kitaplar.length,
-      itemBuilder: _buildListItem,
+    return Column(
+      children: [
+        _buildKategoriFiltresi(),
+        Expanded(
+          child: ListView.builder(
+            itemCount: _kitaplar.length,
+            itemBuilder: _buildListItem,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildKategoriFiltresi() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: [
+        Text("Kategori"),
+        DropdownButton<int>(
+          value: _secilenKategori,
+          items: _tumKategoriler.map((kategoriId) {
+            return DropdownMenuItem<int>(
+              child: Text(
+                kategoriId == -1
+                    ? "Hepsi"
+                    : Sabitler.kategoriler[kategoriId] ?? "",
+              ),
+              value: kategoriId,
+            );
+          }).toList(),
+          onChanged: (int? yeniDeger) {
+            setState(() {
+              if (yeniDeger != null)
+                // ÖNEMLİ setState yapsak bile sayfa yenilenmediğini görüyüroz çünkü AlertDialog builderi(contexi) ana sayfanın
+                //contexinden farklı ve Alert dielogun bulderini güncellemek için AletDialog içinde Content parametresinde
+                // StatefullBuilder() Kullanıyoruz
+                setState(() {
+                  _secilenKategori = yeniDeger;
+                });
+            });
+          },
+        ),
+      ],
     );
   }
 
@@ -105,12 +154,11 @@ class _KitaplarSayfasiState extends State<KitaplarSayfasi> {
   }
 
   Future<void> _tumKitaplariGetir() async {
-    _kitaplar = await _yerelVeriTabani.readTumKitaplar();
+    _kitaplar = await _yerelVeriTabani.readTumKitaplar(_secilenKategori);
     // for (var element in _kitaplar) {
     //   print(element.isim);
     // }
   }
-
 
   void _kitapGuncelle(BuildContext context, int index) async {
     Kitap kitap = _kitaplar[index];
@@ -151,7 +199,7 @@ class _KitaplarSayfasiState extends State<KitaplarSayfasi> {
     Navigator.push(context, sayfaYolu);
   }
 
-  Future<List<dynamic>?>  _pencereAc(
+  Future<List<dynamic>?> _pencereAc(
     BuildContext context, {
     String mevcutIsim = "",
     int mevcutKategori = 0,
