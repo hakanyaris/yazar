@@ -177,7 +177,10 @@ bunu eklesek bile tablo yine veritabanına eklenmeyecek çünkü version:1 hala 
 Yani onUpgrade çalışması için cihazın veri tabanı ile bizim simdi girdiğimiz version farklı olması gerekiyor aynı olursa çalışmaz.
 -----------------------onUpgrade Tabloya kategori dışında başka bir değişken daha eklemek 
 91=>YerelVeriTabanı içinde _tabloGuncelle fonk önceden katergori satırı ekleyen bir sql komutu(88 adım )yazmıştık.
-Eğer ikinci bir satır(mesele renk) eklemek istersek _tabloGuncelle içine ikinci bir db.execute ile  satır ekleme komutu yazacağız. ama opUpgrade çalışınca _tabloGuncelle de çalışlacak ve kategori satırını tekrar eklemeye çalışacak ve program hata verecek.
+Eğer ikinci bir satır(mesele renk) eklemek istersek _tabloGuncelle içine ikinci bir db.execute ile  satır ekleme komutu yazacağız. ama opUpgrade çalışınca _tabloGuncelle de çalışlacak ve kategori satırını tekrar eklemeye çalışacak ve program hata verecek. 
+Bunu önlemek için eklenecek her bir sql komutunu bir string listesine kaydedip for döngüsü içinde bir kod yazıyoruz _tabloGuncelle() içinde .
+
+
 
 
 
