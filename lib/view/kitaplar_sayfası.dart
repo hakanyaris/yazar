@@ -15,7 +15,8 @@ class _KitaplarSayfasiState extends State<KitaplarSayfasi> {
   List<Kitap> _kitaplar = [];
   int _secilenKategori = 0;
   List<int> _tumKategoriler = [-1];
-  List<int> _seciliKitapIdleri=[];// checkBox ile seçilen kitapların id lerini tutacak.
+  List<int> _seciliKitapIdleri =
+      []; // checkBox ile seçilen kitapların id lerini tutacak.
 
   @override
   void initState() {
@@ -36,7 +37,12 @@ class _KitaplarSayfasiState extends State<KitaplarSayfasi> {
 
   //---------------------------------------------------------------------------
   AppBar appBar() {
-    return AppBar(title: Text('KİTAPLAR SAYFASI'));
+    return AppBar(title: Text('KİTAPLAR SAYFASI'),actions: [IconButton(
+            onPressed: () {
+              _seciliKitapSil();
+            },
+            icon: Icon(Icons.delete, color: Colors.black),
+          ), ],);
   }
 
   Widget buildBody() {
@@ -48,8 +54,6 @@ class _KitaplarSayfasiState extends State<KitaplarSayfasi> {
 
   Widget _buildListView(BuildContext context, AsyncSnapshot<void> snapShot) {
     // Veri yükleniyor mu kontrolü
-  
-   
 
     return Column(
       children: [
@@ -117,7 +121,25 @@ class _KitaplarSayfasiState extends State<KitaplarSayfasi> {
             },
             icon: Icon(Icons.delete, color: Colors.black),
           ),
-          // Checkbox(value: false , onChanged:(yeniDeger){if(yeniDeger==true) _seciliKitapIdleri.add();})
+          Checkbox(
+            value: _seciliKitapIdleri.contains(_kitaplar[index].id),
+            onChanged: (bool? yeniDeger) {
+              if (yeniDeger != null) {
+                int? kitapId = _kitaplar[index].id;
+                if (kitapId != null) {
+                  //yeniDeger true ise seçili kitaplar listesine ekle false ise seçili kitaplar listesinden sil
+                  setState(() {
+                    if (yeniDeger) {
+                    _seciliKitapIdleri.add(kitapId);
+                  } else {
+                    _seciliKitapIdleri.remove(kitapId);
+                  }
+                  });
+                }
+              }
+              
+            },
+          ),
         ],
       ),
       onTap: () {
@@ -186,6 +208,8 @@ class _KitaplarSayfasiState extends State<KitaplarSayfasi> {
       setState(() {});
     }
   }
+
+   void _seciliKitapSil() { }
 
   void _bolumlerSayfasiniAc(BuildContext context, int index) {
     MaterialPageRoute sayfaYolu = MaterialPageRoute(
@@ -274,4 +298,6 @@ class _KitaplarSayfasiState extends State<KitaplarSayfasi> {
       },
     );
   }
+  
+ 
 }

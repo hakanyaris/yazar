@@ -110,14 +110,15 @@ CREATE TABLE $_bolumlerTabloAdi (
 
   Future<List<Kitap>> readTumKitaplar(int kategoriId) async {
     Database? db = await _veriTabaniGetir();
-    
+
     List<Kitap> kitaplar = [];
     if (db != null) {
-
       String? filtreWhere;
-      List<int> filtreArgs=[];
-      if (kategoriId !=-1){filtreWhere = " $_kategoriKitaplar = ? ";
-      filtreArgs.add(kategoriId);}
+      List<int> filtreArgs = [];
+      if (kategoriId != -1) {
+        filtreWhere = " $_kategoriKitaplar = ? ";
+        filtreArgs.add(kategoriId);
+      }
       List<Map<String, dynamic>> kitaplarMap = await db.query(
         _kitaplarTabloAdi,
         where: filtreWhere,
@@ -149,6 +150,20 @@ CREATE TABLE $_bolumlerTabloAdi (
     Database? db = await _veriTabaniGetir();
     if (db != null) {
       return await db.delete(
+        _kitaplarTabloAdi,
+        where: "$_idKitaplar = ?",
+        whereArgs: [kitap.id],
+      );
+    } else {
+      return 0;
+    }
+  }
+  Future<int> deleteKitaplar(List <int> seciliKitapIdler) async {
+    Database? db = await _veriTabaniGetir();
+    if (db != null && seciliKitapIdler.isNotEmpty ) {
+      String filtre = "(";
+      return await db.delete(
+        
         _kitaplarTabloAdi,
         where: "$_idKitaplar = ?",
         whereArgs: [kitap.id],

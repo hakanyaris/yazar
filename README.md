@@ -208,7 +208,12 @@ _tumKategoriler.addAll(Sabitler.kategoriler.keys);  _1 değerininde olduğu yeni
 if (kategoriId !=-1) { filtreWhere = " $_kategoriKitaplar = ? and idKitaplar > ?";
                                  filtreArgs.add(kategoriId);   filtreArgs.add(2)}
                             
-Not : and ve or kelimelerini kullanarak  listeleri filtreleyebiliriz 
+Not : and ve or kelimelerini kullanarak  listeleri filtreleyebiliriz  ve 2 ve daha fazla filtreyi yan yaba ekleyebiliriz.
+------------------------ listedeki Kitapları toplu silme  
+  Listedeki her bir kitabın yanına chackBox koyup işretli chacboxu bir listeye ekleyip sil butonun basınca listedeki kitaplar silinsin 
+101=>  kitaplar_Sayfasi.dart   listTile içinde chackBox ekliyoruz .
+102=>  kitaplar_Sayfasi.dart   void _seciliKitapSil fonk. ile  listedeki kitapları sileceğiz boş şimdilik
+103=> yerel_veri_tabani.dart  da deleteKitap(Kitap kitap) fonk kopyalayıp deleteKitaplar(List <int> seciliKitapIdler) adını koyuyoruz. 
 
 
 
