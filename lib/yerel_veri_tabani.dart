@@ -110,12 +110,18 @@ CREATE TABLE $_bolumlerTabloAdi (
 
   Future<List<Kitap>> readTumKitaplar(int kategoriId) async {
     Database? db = await _veriTabaniGetir();
+    
     List<Kitap> kitaplar = [];
     if (db != null) {
+
+      String? filtreWhere;
+      List<int> filtreArgs=[];
+      if (kategoriId !=-1){filtreWhere = " $_kategoriKitaplar = ? ";
+      filtreArgs.add(kategoriId);}
       List<Map<String, dynamic>> kitaplarMap = await db.query(
         _kitaplarTabloAdi,
-        where: " $_kategoriKitaplar = ? ",
-        whereArgs: [kategoriId],
+        where: filtreWhere,
+        whereArgs: filtreArgs,
       );
       for (Map<String, dynamic> m in kitaplarMap) {
         Kitap k = Kitap.fromMap(m);

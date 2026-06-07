@@ -13,8 +13,9 @@ class _KitaplarSayfasiState extends State<KitaplarSayfasi> {
   YerelVeriTabani _yerelVeriTabani = YerelVeriTabani();
 
   List<Kitap> _kitaplar = [];
-  int _secilenKategori = -1;
+  int _secilenKategori = 0;
   List<int> _tumKategoriler = [-1];
+  List<int> _seciliKitapIdleri=[];// checkBox ile seçilen kitapların id lerini tutacak.
 
   @override
   void initState() {
@@ -47,13 +48,8 @@ class _KitaplarSayfasiState extends State<KitaplarSayfasi> {
 
   Widget _buildListView(BuildContext context, AsyncSnapshot<void> snapShot) {
     // Veri yükleniyor mu kontrolü
-    if (snapShot.connectionState == ConnectionState.waiting) {
-      return Center(child: CircularProgressIndicator());
-    }
-
-    if (_kitaplar.isEmpty) {
-      return Center(child: Text("Henüz kitap eklenmemiş."));
-    }
+  
+   
 
     return Column(
       children: [
@@ -121,6 +117,7 @@ class _KitaplarSayfasiState extends State<KitaplarSayfasi> {
             },
             icon: Icon(Icons.delete, color: Colors.black),
           ),
+          // Checkbox(value: false , onChanged:(yeniDeger){if(yeniDeger==true) _seciliKitapIdleri.add();})
         ],
       ),
       onTap: () {

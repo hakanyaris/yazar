@@ -189,15 +189,26 @@ _tumKategoriler.addAll(Sabitler.kategoriler.keys);  _1 değerininde olduğu yeni
 
 95=>_buildKategoriFiltresi() fonk  içindeki listeyi _tumKategoriler den çekiyoruz DropDownMenuItem in  child kısmına  Text () içinde kategoriId ==-1 ise "Hepsi" değilse Sabitler.kategoriler[kategoriId] ?? "" olacak
 
-------------------Kategoriye göre listeleme veritabanı kodu düzenleme
- yerel_veri_tabani.dart
+------------------Kategoriye göre listeleme veritabanı kodu düzenleme 
+ yerel_veri_tabani.dart => readTumKitaplar
 96=> 33. adımdaki Future<List<Kitap>> _readTumKitaplar(int kategoriId)  fonk int kategoriId isteyeceğiz.KategoriId göre listeleyecepğiz
 
 97=> db.duery e where :"kategoriId = ?" whereArgs:[kategoriId] ekleyerek  AnaSayfadaki listelemeyi bu şekilde filtreliyoruz.
 
-98=> 
+98=> Hepsi seçeneğeni tıklanınca _secilenKategori=_1 olacağından  veritabanında kategorisi  -1 olan hiçbir kitap yok bu yüzden ekranda hiçbir kitap gösterilmeyecek.
+  Bunu düzeltmek için _secilenKategori=_1 olunca where :"kategoriId = ?" whereArgs:[kategoriId]  filtreleri hiç yapılmasın filtre olmayınca tüm liste geri dönecek zaten.
 
+99=>(readTumKitaplar fonk .) String? filterWhere ve List<int>? filtreArgs; iki değişken oluşturup bunları where ve whereArgs atıyoruz( where: filtreWhere, whereArgs: filtreArgs,)   kategoriId -1 büyükse  filterWhere filterWhere filtreleme çalışması içinayarlıyoruz.
+ if (kategoriId !=-1) { filtreWhere = " $_kategoriKitaplar = ? "; filtreArgs = [kategoriId];}
 
+-------------------Kategoriye ve id ye göre listeleme (Birden fazla koşula göre listeleme)
+
+100=>Hem kategoriye göre hem de kitapId 2 den büyük kitaplar getirilsin 
+   kategori filtresine ek olarak and ile ikinci filtreyi ekliyoruz
+if (kategoriId !=-1) { filtreWhere = " $_kategoriKitaplar = ? and idKitaplar > ?";
+                                 filtreArgs.add(kategoriId);   filtreArgs.add(2)}
+                            
+Not : and ve or kelimelerini kullanarak  listeleri filtreleyebiliriz 
 
 
 
