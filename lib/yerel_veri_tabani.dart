@@ -158,12 +158,13 @@ CREATE TABLE $_bolumlerTabloAdi (
       return 0;
     }
   }
-  Future<int> deleteKitaplar(List <int> seciliKitapIdler) async {
+
+  Future<int> deleteKitaplar(List<int> seciliKitapIdler) async {
     Database? db = await _veriTabaniGetir();
-    if (db != null && seciliKitapIdler.isNotEmpty ) {
+    if (db != null && seciliKitapIdler.isNotEmpty) {
       String filtre = "(";
+      for (int a = 0; a < seciliKitapIdler.length; a++) {}
       return await db.delete(
-        
         _kitaplarTabloAdi,
         where: "$_idKitaplar = ?",
         whereArgs: [kitap.id],
