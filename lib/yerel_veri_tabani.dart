@@ -162,12 +162,18 @@ CREATE TABLE $_bolumlerTabloAdi (
   Future<int> deleteKitaplar(List<int> seciliKitapIdler) async {
     Database? db = await _veriTabaniGetir();
     if (db != null && seciliKitapIdler.isNotEmpty) {
-      String filtre = "(";
-      for (int a = 0; a < seciliKitapIdler.length; a++) {}
+      String filtre = "$_idKitaplar in(";
+      for (int a = 0; a < seciliKitapIdler.length; a++) {
+        if (a != seciliKitapIdler.length - 1) {
+          filtre += "?,";
+        } else {
+          filtre += ")";
+        }
+      }
       return await db.delete(
         _kitaplarTabloAdi,
-        where: "$_idKitaplar = ?",
-        whereArgs: [kitap.id],
+        where: filtre, //" $_idKitaplar in (?,?,?,?,?) yani 5 elemanda işlem yap
+        whereArgs: seciliKitapIdler,
       );
     } else {
       return 0;
