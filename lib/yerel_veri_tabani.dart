@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math';
 
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
@@ -123,6 +124,11 @@ CREATE TABLE $_bolumlerTabloAdi (
         _kitaplarTabloAdi,
         where: filtreWhere,
         whereArgs: filtreArgs,
+       // orderBy: _idKitaplar desc   //İd göre büyükten küçüşe  sıralama asc olsaydı küçükten büyükşe sıralama olur
+       //orderBy: "$isimKKitaplar collate localized"  //Kitapları sıralarken ascıı koda  göre değile  alfabetik sıralama yapacak(Cihazdaki dile göre)0
+       orderBy:"$_kategoriKitaplar , $_isimKitaplar",//Kitapları hem kategoriye göre sıralayıp(kategorId)hem de aynı kategoriye sahip kitapları kendi içinde alfabetik sıralayabiliriz. 
+      limit: 3,// Listeden 3 tane elemanı çek(Listeye göre 3 tane kitap olacak) 
+      offset: 2//Listeden 2 tane elemanı atla(Listeye göre 2 tane kitap atla)
       );
       for (Map<String, dynamic> m in kitaplarMap) {
         Kitap k = Kitap.fromMap(m);

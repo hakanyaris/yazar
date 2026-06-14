@@ -215,8 +215,10 @@ Not : and ve or kelimelerini kullanarak  listeleri filtreleyebiliriz  ve 2 ve da
 102=>  kitaplar_Sayfasi.dart   void _seciliKitapSil fonk. ile  listedeki kitapları sileceğiz boş şimdilik
 103=> yerel_veri_tabani.dart  da deleteKitap(Kitap kitap) fonk kopyalayıp deleteKitaplar(List <int> seciliKitapIdler) adını koyuyoruz. Düzenlyoruz
 104=> void _seciliKitapSil fonk düzenliyoruz.
-------------------------Listedeki Kitapları Sıralama(ıd göre )orderBy
-105=> yerel_veri_tabani.dart içideki readTumKitaplar fonk içine qery içine orderBy: ekleyip _idKitpalar ekleyerek kitapları id göre sıralamasını sağlıyoruz. 
+------------------------Listedeki Kitapları Sıralama(ıd , kitap ismine ,  göre )orderBy
+105=> yerel_veri_tabani.dart içideki readTumKitaplar fonk içine qery içine orderBy: ekleyip _idKitpalar ekleyerek kitapları id göre sıralamasını sağlıyoruz. orderBy: _idKitpalar  desc diyerek id büyükten küçüğe sıralayabiliriz.
+106=> iki duruma göre sıralama: Kitapları hem kategoriye göre sıralayıp(kategorId)hem de aynı kategoriye sahip kitapları kendi içinde alfabetik sıralayabiliriz. 
+
 
 
 
