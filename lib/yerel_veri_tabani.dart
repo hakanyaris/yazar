@@ -162,6 +162,7 @@ CREATE TABLE $_bolumlerTabloAdi (
   Future<int> deleteKitaplar(List<int> seciliKitapIdler) async {
     Database? db = await _veriTabaniGetir();
     if (db != null && seciliKitapIdler.isNotEmpty) {
+      // filtre stringi oluşturup  where ye eşitliyoruz.
       String filtre = "$_idKitaplar in(";
       for (int a = 0; a < seciliKitapIdler.length; a++) {
         if (a != seciliKitapIdler.length - 1) {

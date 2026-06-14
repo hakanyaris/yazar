@@ -213,7 +213,10 @@ Not : and ve or kelimelerini kullanarak  listeleri filtreleyebiliriz  ve 2 ve da
   Listedeki her bir kitabın yanına chackBox koyup işretli chacboxu bir listeye ekleyip sil butonun basınca listedeki kitaplar silinsin 
 101=>  kitaplar_Sayfasi.dart   listTile içinde chackBox ekliyoruz .
 102=>  kitaplar_Sayfasi.dart   void _seciliKitapSil fonk. ile  listedeki kitapları sileceğiz boş şimdilik
-103=> yerel_veri_tabani.dart  da deleteKitap(Kitap kitap) fonk kopyalayıp deleteKitaplar(List <int> seciliKitapIdler) adını koyuyoruz. 
+103=> yerel_veri_tabani.dart  da deleteKitap(Kitap kitap) fonk kopyalayıp deleteKitaplar(List <int> seciliKitapIdler) adını koyuyoruz. Düzenlyoruz
+104=> void _seciliKitapSil fonk düzenliyoruz.
+------------------------Listedeki Kitapları Sıralama(ıd göre )orderBy
+105=> yerel_veri_tabani.dart içideki readTumKitaplar fonk içine qery içine orderBy: ekleyip _idKitpalar ekleyerek kitapları id göre sıralamasını sağlıyoruz. 
 
 
 
