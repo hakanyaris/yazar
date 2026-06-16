@@ -37,12 +37,17 @@ class _KitaplarSayfasiState extends State<KitaplarSayfasi> {
 
   //---------------------------------------------------------------------------
   AppBar appBar() {
-    return AppBar(title: Text('KİTAPLAR SAYFASI'),actions: [IconButton(
-            onPressed: () {
-              _seciliKitapSil();
-            },
-            icon: Icon(Icons.delete, color: Colors.black),
-          ), ],);
+    return AppBar(
+      title: Text('KİTAPLAR SAYFASI'),
+      actions: [
+        IconButton(
+          onPressed: () {
+            _seciliKitapSil();
+          },
+          icon: Icon(Icons.delete, color: Colors.black),
+        ),
+      ],
+    );
   }
 
   Widget buildBody() {
@@ -130,14 +135,13 @@ class _KitaplarSayfasiState extends State<KitaplarSayfasi> {
                   //yeniDeger true ise seçili kitaplar listesine ekle false ise seçili kitaplar listesinden sil
                   setState(() {
                     if (yeniDeger) {
-                    _seciliKitapIdleri.add(kitapId);
-                  } else {
-                    _seciliKitapIdleri.remove(kitapId);
-                  }
+                      _seciliKitapIdleri.add(kitapId);
+                    } else {
+                      _seciliKitapIdleri.remove(kitapId);
+                    }
                   });
                 }
               }
-              
             },
           ),
         ],
@@ -209,7 +213,7 @@ class _KitaplarSayfasiState extends State<KitaplarSayfasi> {
     }
   }
 
-   void _seciliKitapSil() { }
+  void _seciliKitapSil() {}
 
   void _bolumlerSayfasiniAc(BuildContext context, int index) {
     MaterialPageRoute sayfaYolu = MaterialPageRoute(
@@ -298,6 +302,4 @@ class _KitaplarSayfasiState extends State<KitaplarSayfasi> {
       },
     );
   }
-  
- 
 }

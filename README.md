@@ -218,6 +218,9 @@ Not : and ve or kelimelerini kullanarak  listeleri filtreleyebiliriz  ve 2 ve da
 ------------------------Listedeki Kitapları Sıralama(ıd , kitap ismine ,  göre )orderBy
 105=> yerel_veri_tabani.dart içideki readTumKitaplar fonk içine qery içine orderBy: ekleyip _idKitpalar ekleyerek kitapları id göre sıralamasını sağlıyoruz. orderBy: _idKitpalar  desc diyerek id büyükten küçüğe sıralayabiliriz.
 106=> iki duruma göre sıralama: Kitapları hem kategoriye göre sıralayıp(kategorId)hem de aynı kategoriye sahip kitapları kendi içinde alfabetik sıralayabiliriz. 
+----------------------Kitapları çekerken sayfa sayfa(sayfalama) çekme .
+ Listedeki kitapları çekerken  ilk 15 kitabı göstersin biz sayfası kaydırdıkça 30  sonra 45 kitap şeklinde göstesin
+ 107=>  readTumKitaplar (      ,int  sonKitapId) sonKitapId istiyoruz. filtreleri sonkitapId göre düzenliyoruz. 
 
 
 
