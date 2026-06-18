@@ -220,7 +220,16 @@ Not : and ve or kelimelerini kullanarak  listeleri filtreleyebiliriz  ve 2 ve da
 106=> iki duruma göre sıralama: Kitapları hem kategoriye göre sıralayıp(kategorId)hem de aynı kategoriye sahip kitapları kendi içinde alfabetik sıralayabiliriz. 
 ----------------------Kitapları çekerken sayfa sayfa(sayfalama) çekme .
  Listedeki kitapları çekerken  ilk 15 kitabı göstersin biz sayfası kaydırdıkça 30  sonra 45 kitap şeklinde göstesin
- 107=>  readTumKitaplar (      ,int  sonKitapId) sonKitapId istiyoruz. filtreleri sonkitapId göre düzenliyoruz. 
+ 107=>  readTumKitaplar (      ,int  sonKitapId) sonKitapId istiyoruz. filtreleri sonkitapId göre düzenliyoruz.
+ 108=> _kitaplar_sayfasi içideki _tümKitaplariGetir fonk kullanmayacağız bunu yerine _ilkKitaplariGetir fonk ile _sonrakiKitaplariGetir fonksiyonunu kullacağız . ilkKitaplarıGetir fonk.( litim:15 ) ile  ilk 15 kitabı getirecek.(sonKitapId) 0 veriyoruz yani id 0 dan büyük kitapları getir. 
+ 109=> _sonrakiKitaplariGetir fonk. içinde sonKitapId için ekran kaydırılırken(KULLANICI LİSTENİN SONUNA GELDİĞİNDE) çekilen en son kitap ıd bilgisini almamız gerekiyor ki o ıd den büyük kitaplar veritabanından çeliksin.
+ ------------------ScrollController
+  109=>  bunun için kullanıcının listenin sonuna kaydırıp kaydırmadığını kontrolünü yapmamız gerekiyor.ScrollController oluşturup ListView ile bağlayacağız ve bu control ile kaydırma durumunu kontrol edeceğiz..
+  110=> _scrollController kaydırma durumunu dinelmek için initState içinde _scrollController.addListener((){}) fonk kullanıyoruz.
+  111=>  _scrollController.addListener(_kaydirmaKontrol)   _kaydirmaKontrol atıyoyur
+  112=> _kaydirmaKontrol scrolController  pozisyon olarak kaydırabileceği max pozisoyne gelmişse sonrkiKitaplariGetir fonk getir fonk. burada çağırıyoruz.
+  
+  113=> BURADA bir sorunla karşılaşıyoruz .ekranı kaydırdığımızda sonrakiKitapGetir fonk. çalışınca setState de çalışıyor ve _ilkKitaplarıGetir fonk tekrar çalışıyor ve _kitaplar listesine ilk 15 kitap atanır ve soraki kitaplar eklenmez.sadece 15 kitap görürüz.
 
 
 

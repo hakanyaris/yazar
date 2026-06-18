@@ -11,7 +11,7 @@ class KitaplarSayfasi extends StatefulWidget {
 
 class _KitaplarSayfasiState extends State<KitaplarSayfasi> {
   YerelVeriTabani _yerelVeriTabani = YerelVeriTabani();
-
+  ScrollController _scrollController = ScrollController();
   List<Kitap> _kitaplar = [];
   int _secilenKategori = 0;
   List<int> _tumKategoriler = [-1];
@@ -23,6 +23,7 @@ class _KitaplarSayfasiState extends State<KitaplarSayfasi> {
     // TODO: implement initState
     super.initState();
     _tumKategoriler.addAll(Sabitler.kategoriler.keys);
+    _scrollController.addListener(_kaydirmaKontrol);
   }
 
   @override
@@ -54,7 +55,7 @@ class _KitaplarSayfasiState extends State<KitaplarSayfasi> {
     // init Stata kullanmıyoruz FutureBuilder Kullanıyoruz.
     // FuturBuilder ile  //future içindeki fonsiyon çalışır daha sora // buildere yazılan fonlsiyon çalışır. yani
     // _tumKitaplariGetir fonksiyonu ile kitapları sqflite den çeker sonra bulder: deki  _buildListView ile ekranı çizer.
-    return FutureBuilder(future: _tumKitaplariGetir(), builder: _buildListView);
+    return FutureBuilder(future: _ilkKitaplariGetir(), builder: _buildListView);
   }
 
   Widget _buildListView(BuildContext context, AsyncSnapshot<void> snapShot) {
@@ -67,6 +68,7 @@ class _KitaplarSayfasiState extends State<KitaplarSayfasi> {
           child: ListView.builder(
             itemCount: _kitaplar.length,
             itemBuilder: _buildListItem,
+            controller: _scrollController,
           ),
         ),
       ],
@@ -176,11 +178,27 @@ class _KitaplarSayfasiState extends State<KitaplarSayfasi> {
     }
   }
 
-  Future<void> _tumKitaplariGetir() async {
-    _kitaplar = await _yerelVeriTabani.readTumKitaplar(_secilenKategori);
-    // for (var element in _kitaplar) {
-    //   print(element.isim);
-    // }
+  // Future<void> _tumKitaplariGetir() async {
+  //   _kitaplar = await _yerelVeriTabani.readTumKitaplar(_secilenKategori);
+  //   // for (var element in _kitaplar) {
+  //   //   print(element.isim);
+  //   // }
+  // }
+  // README.MD  108 MADDE
+  Future<void> _ilkKitaplariGetir() async {
+    _kitaplar = await _yerelVeriTabani.readTumKitaplar(_secilenKategori, 0);
+  }
+
+  Future<void> _sonrakiKitaplariGetir() async {
+    int? sonKitapId = _kitaplar.last.id; //
+    if (sonKitapId != null) {
+      List<Kitap> sonrakiKitaplar = await _yerelVeriTabani.readTumKitaplar(
+        _secilenKategori,
+        sonKitapId,
+      );
+      _kitaplar.addAll(sonrakiKitaplar);
+      setState(() {});
+    }
   }
 
   void _kitapGuncelle(BuildContext context, int index) async {
@@ -301,5 +319,14 @@ class _KitaplarSayfasiState extends State<KitaplarSayfasi> {
         );
       },
     );
+  }
+
+  void _kaydirmaKontrol() {
+    //offset scrolcontrollerin mevcut kaydırma pozisyonu
+    //_scrollController.position.maxScrollExtent   scrolcontrollerin kaydırılabileceği maxsimum pozisyon
+    if (_scrollController.offset ==
+        _scrollController.position.maxScrollExtent) {
+      _sonrakiKitaplariGetir();
+    }
   }
 }
