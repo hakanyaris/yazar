@@ -229,7 +229,10 @@ Not : and ve or kelimelerini kullanarak  listeleri filtreleyebiliriz  ve 2 ve da
   111=>  _scrollController.addListener(_kaydirmaKontrol)   _kaydirmaKontrol atıyoyur
   112=> _kaydirmaKontrol scrolController  pozisyon olarak kaydırabileceği max pozisoyne gelmişse sonrkiKitaplariGetir fonk getir fonk. burada çağırıyoruz.
   
-  113=> BURADA bir sorunla karşılaşıyoruz .ekranı kaydırdığımızda sonrakiKitapGetir fonk. çalışınca setState de çalışıyor ve _ilkKitaplarıGetir fonk tekrar çalışıyor ve _kitaplar listesine ilk 15 kitap atanır ve soraki kitaplar eklenmez.sadece 15 kitap görürüz.
+  113=> BURADA bir sorunla karşılaşıyoruz .ekranı kaydırdığımızda sonrakiKitapGetir fonk. çalışınca setState de çalışıyor ve futueBuilder çaışıp _ilkKitaplarıGetir fonk tekrar çalışıyor ve _kitaplar listesine ilk 15 kitap atanır ve soraki kitaplar eklenmez.sadece 15 kitap görürüz.
+  114=> bu sorunu çözmek için _ilkKitaplarıGetir fonk her setState çalışınca çalışıyorsa bunu önlemek için _kitap listesi dolu ise _ilkKitaplarıGetir içindekiler çalışmasın.Kİtap listesi boş kontorlu yaptırırız. 
+
+  115=> Yine bir sorunla karşılaşıyoruz kitap ekleyince setState çalışır  yeni eklenen kitap 114 maddede boş kontrolünden dolayı  readTumKitaplar çalışmadığı için yeni liste veritabanından çelimez. Bunun için KitapEkle KitapSil SeciliKitaplariSil fonk içinde kitapla ilgili işlem yapıldıktan sonra kitap listesini boşaltıyoruz ki _ilkKitaplarıGetir fon if kontorlunden geçip readTumKitaplar fonk çalışsın
 
 
 

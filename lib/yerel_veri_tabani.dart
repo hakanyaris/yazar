@@ -109,26 +109,22 @@ CREATE TABLE $_bolumlerTabloAdi (
       return -1;
   }
 
-  Future<List<Kitap>> readTumKitaplar(int kategoriId) async {
+  Future<List<Kitap>> readTumKitaplar(int kategoriId, int sonKitapId) async {
     Database? db = await _veriTabaniGetir();
 
     List<Kitap> kitaplar = [];
     if (db != null) {
-      String? filtreWhere;
-      List<int> filtreArgs = [];
+      String? filtreWhere = " $_idKitaplar > ?";
+      List<int> filtreArgs = [sonKitapId];
       if (kategoriId != -1) {
-        filtreWhere = " $_kategoriKitaplar = ? ";
+        filtreWhere += " and $_kategoriKitaplar = ? ";
         filtreArgs.add(kategoriId);
       }
       List<Map<String, dynamic>> kitaplarMap = await db.query(
         _kitaplarTabloAdi,
         where: filtreWhere,
         whereArgs: filtreArgs,
-       // orderBy: _idKitaplar desc   //İd göre büyükten küçüşe  sıralama asc olsaydı küçükten büyükşe sıralama olur
-       //orderBy: "$isimKKitaplar collate localized"  //Kitapları sıralarken ascıı koda  göre değile  alfabetik sıralama yapacak(Cihazdaki dile göre)0
-       orderBy:"$_kategoriKitaplar , $_isimKitaplar",//Kitapları hem kategoriye göre sıralayıp(kategorId)hem de aynı kategoriye sahip kitapları kendi içinde alfabetik sıralayabiliriz. 
-      limit: 3,// Listeden 3 tane elemanı çek(Listeye göre 3 tane kitap olacak) 
-      offset: 2//Listeden 2 tane elemanı atla(Listeye göre 2 tane kitap atla)
+        limit: 15,
       );
       for (Map<String, dynamic> m in kitaplarMap) {
         Kitap k = Kitap.fromMap(m);
@@ -168,7 +164,6 @@ CREATE TABLE $_bolumlerTabloAdi (
   Future<int> deleteKitaplar(List<int> seciliKitapIdler) async {
     Database? db = await _veriTabaniGetir();
     if (db != null && seciliKitapIdler.isNotEmpty) {
-      // filtre stringi oluşturup  where ye eşitliyoruz.
       String filtre = "$_idKitaplar in(";
       for (int a = 0; a < seciliKitapIdler.length; a++) {
         if (a != seciliKitapIdler.length - 1) {

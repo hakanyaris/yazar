@@ -23,7 +23,9 @@ class _KitaplarSayfasiState extends State<KitaplarSayfasi> {
     // TODO: implement initState
     super.initState();
     _tumKategoriler.addAll(Sabitler.kategoriler.keys);
-    _scrollController.addListener(_kaydirmaKontrol);
+    _scrollController.addListener(
+      _kaydirmaKontrol,
+    ); //Yani, kullanıcı ekranı her kaydırdığında _scrollController bunu algılayacak ve _kaydirmaKontrol isimli fonksiyonu tetikleyecektir.
   }
 
   @override
@@ -173,6 +175,8 @@ class _KitaplarSayfasiState extends State<KitaplarSayfasi> {
       int? kitapIdsi = await _yerelVeriTabani.createKitap(yeniKitap);
       print("Kitap id si : $kitapIdsi");
       if (kitapIdsi != null) {
+        _kitaplar = []; //Readme.md 115 adımda açıkladık
+        //veritabanına kitap eklendi fakat ekranda gösterilmedi.
         setState(() {});
       }
     }
@@ -186,7 +190,10 @@ class _KitaplarSayfasiState extends State<KitaplarSayfasi> {
   // }
   // README.MD  108 MADDE
   Future<void> _ilkKitaplariGetir() async {
-    _kitaplar = await _yerelVeriTabani.readTumKitaplar(_secilenKategori, 0);
+    // Readme.md 113 ve 114 madde açıklama var
+    if (_kitaplar.isEmpty) {
+      _kitaplar = await _yerelVeriTabani.readTumKitaplar(_secilenKategori, 0);
+    }
   }
 
   Future<void> _sonrakiKitaplariGetir() async {
@@ -217,6 +224,7 @@ class _KitaplarSayfasiState extends State<KitaplarSayfasi> {
       kitap.kategori = yeniKategori;
       int guncellenenSatirSayisi = await _yerelVeriTabani.updateKitap(kitap);
       if (guncellenenSatirSayisi > 0) {
+        //Readme.md 115 adımda açıkladık
         setState(() {});
       }
     }
@@ -227,11 +235,16 @@ class _KitaplarSayfasiState extends State<KitaplarSayfasi> {
 
     int silinenSatirSayisi = await _yerelVeriTabani.deleteKitap(kitap);
     if (silinenSatirSayisi > 0) {
+      _kitaplar = []; //Readme.md 115 adımda açıkladık
       setState(() {});
     }
   }
 
-  void _seciliKitapSil() {}
+  void _seciliKitapSil() async {
+    int silinenSatirSayis = await _yerelVeriTabani.deleteKitaplar(
+      _seciliKitapIdleri,
+    );
+  }
 
   void _bolumlerSayfasiniAc(BuildContext context, int index) {
     MaterialPageRoute sayfaYolu = MaterialPageRoute(
