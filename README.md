@@ -233,8 +233,27 @@ Not : and ve or kelimelerini kullanarak  listeleri filtreleyebiliriz  ve 2 ve da
   114=> bu sorunu çözmek için _ilkKitaplarıGetir fonk her setState çalışınca çalışıyorsa bunu önlemek için _kitap listesi dolu ise _ilkKitaplarıGetir içindekiler çalışmasın.Kİtap listesi boş kontorlu yaptırırız. 
 
   115=> Yine bir sorunla karşılaşıyoruz kitap ekleyince setState çalışır  yeni eklenen kitap 114 maddede boş kontrolünden dolayı  readTumKitaplar çalışmadığı için yeni liste veritabanından çelimez. Bunun için KitapEkle KitapSil SeciliKitaplariSil fonk içinde kitapla ilgili işlem yapıldıktan sonra kitap listesini boşaltıyoruz ki _ilkKitaplarıGetir fonk if kontorlunden geçip readTumKitaplar fonk çalışsın
+
+-----------------Katmanlı Mimari Model View ViewModel MVVM
   116=> MVVM Model View ViewModel katmanları : bir porjede her katman birbirinden bağımsız olmalı bir katmanda yapacağımıza değişiklik diğer katmanda değişkliğe neden olmamalı.
-      Mesela Model katmanında bizim oluşturulmaTarihi özelliğimiz  var ama biz onu DateTime olarak tututoruz Fakat veritbanına gönderirken ve veritabanından çekerken SQFLİTE dateTime tanımadağı için model de  onu milsecondes e çevirip işlem yapıyoruz .ama ileride veritabanına değiştirirsek veya iki veri tabanı kullanacaksak yeni veri taban dateTİme tipinde göndermemiz gerekirse Model sınıfında değişiklik yapmamız gerekecek.Bu  MVVM ters bir durumdur.
+      Mesela Model katmanında bizim oluşturulmaTarihi özelliğimiz  var ama biz onu DateTime olarak tututoruz Fakat veritabanına gönderirken ve veritabanından çekerken SQFLİTE dateTime tanımadağı için model de  onu milsecondes e çevirip işlem yapıyoruz .ama ileride veritabanına değiştirirsek veya iki veri tabanı kullanacaksak yeni veri taban dateTİme tipinde göndermemiz gerekirse Model sınıfında değişiklik yapmamız gerekecek.Bu  MVVM ters bir durumdur.
+  117=> olusturulmaTarihi = DateTime.fromMillisecondsSinceEpoch(
+        map["olusturulmaTarihi"],) normalde  kitapModel fromMap sınıfında böyle bir dönüşümle veritabanına gönderiyorduk bu dönüşüm başka veri tabanına geçince bizi burda değişiklik yapmaya zorlayacaktı.
+        olusturulmaTarihi =  map["olusturulmaTarihi"] bu şekilde düzenleyerek artık veritanına DateTime olarak göndereceğiz  veritabanında bu dönüşümü yapacağız .
+
+  118=> YerelVeriTabani sınıfında  bir fonksiyon tanımlıyoruz Map<String, dynamic> _kitapToMap(Kitap kitap)  kitabı  alıyor map a çeviriyor içindeki oluşturulma tarihini DateTime den miliSecondes e çevirip geriye map veren  böylece dateTimeden Milisecondes e çevirme işlemini veritabanı içinde yapıyoruz.
+
+  119=> _kitapToMap fonksiyonunu(118. adım) createKitap ve updateKitap fonk içinde kitap.toMap() yerine tanımlıyoruz.
+
+  120=> YerelVeriTabani içindeki  readTumKitaplar fonk. Kitap.fromMap(maptan kitaba dönüştür)  olusturulmaTarihini milisecodes alarak veritabanından alırız. bu map i kitap nesnesine dönüştürmek için  ;
+   Kitap _mapToKitap(Map<String, dynamic> map) fonk oluşturuyoruz. burada hem map şeklinde gelen kitap nesnelerini int(milisecondes) olşturulma tarihlerini DateTime dönştürüyoruz hem de kitap nesnesine çeviriyoruz. 
+
+   121=> id  kaydetme  sorunu ;sql tabanlı veritabanlarında id int düründe firebase tabanlı veritabanlarında ise stirng türünde biz model sınıfında id int türünde belirledik bu veritabanlarıda farkılı türlerde kullanıldığı için id dynamic yapmamız daha mantıklı.
+      Bu nedenker kitap ve bölüm model sınıflarında id dynamic yapıyoru önceden int? id ; yerine dynamic id yazıyoruz çünkü dynamic tip otomatik olarak null özelliği ile gelir.
+
+-------------view katmanı
+  Bu katmanda sadece görsel arayüzün çizilmesi içine gereken kodlar yazılır.
+  122=> burada  void _kitapEkle(BuildContext context) fonksiyonu gösel arayüz çizmekten ziyade kullanıcının tarafından girilen kitabı veritabanına ulaşıp veritabanına kaydeden bir fonk. olduğu için modelView  katmanına taşıyacağız.kitapGüncelle kitapSil v.b ayrıca Sabiteler ve diğer arayüzle ilgili olmayan bütün şeyleri model View katmanına taşıyacağız. 
 
 
 

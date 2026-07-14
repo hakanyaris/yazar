@@ -165,6 +165,7 @@ class _KitaplarSayfasiState extends State<KitaplarSayfasi> {
     );
   }
 
+  //kullanıcınmın Girdiği kitabı veritabanına ulaşıp veritababına kaydediyor.
   void _kitapEkle(BuildContext context) async {
     List<dynamic>? kitapAdiveKategori = await _pencereAc(context);
     if (kitapAdiveKategori != null && kitapAdiveKategori.length > 1) {

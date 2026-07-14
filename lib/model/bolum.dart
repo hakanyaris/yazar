@@ -1,5 +1,5 @@
 class Bolum {
-  int? id;
+  dynamic id;
   int kitapId;
   String baslik;
   String icerik;
@@ -12,5 +12,5 @@ class Bolum {
 
   Map<String, dynamic> toMap() {
     return {"id": id, "kitapId": kitapId, "baslik": baslik, "icerik": icerik};
-  } 
+  }
 }

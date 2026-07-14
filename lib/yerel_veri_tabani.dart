@@ -104,7 +104,7 @@ CREATE TABLE $_bolumlerTabloAdi (
   Future<int?> createKitap(Kitap kitap) async {
     Database? db = await _veriTabaniGetir();
     if (db != null) {
-      return await db.insert(_kitaplarTabloAdi, kitap.toMap());
+      return await db.insert(_kitaplarTabloAdi, _kitapToMap(kitap));
     } else
       return -1;
   }
@@ -126,8 +126,8 @@ CREATE TABLE $_bolumlerTabloAdi (
         whereArgs: filtreArgs,
         limit: 15,
       );
-      for (Map<String, dynamic> m in kitaplarMap) {
-        Kitap k = Kitap.fromMap(m);
+      for (Map<String, dynamic> map in kitaplarMap) {
+        Kitap k = _mapToKitap(map);
         kitaplar.add(k);
       }
     }
@@ -139,7 +139,7 @@ CREATE TABLE $_bolumlerTabloAdi (
     if (db != null) {
       return await db.update(
         _kitaplarTabloAdi,
-        kitap.toMap(),
+        _kitapToMap(kitap),
         where: "$_idKitaplar = ?",
         whereArgs: [kitap.id],
       );
@@ -233,6 +233,27 @@ CREATE TABLE $_bolumlerTabloAdi (
     } else {
       return 0;
     }
+  }
+
+  // bu fonksiyon kitabı alıyor map a çeviriyor içindeki oluşturulma tarihini DateTime den miliSecondes e çevirip geriye map veriyor.
+  Map<String, dynamic> _kitapToMap(Kitap kitap) {
+    Map<String, dynamic> kitapMap = kitap.toMap();
+    DateTime? olusturulmaTarihi = kitapMap["olusturulmaTarihi"];
+
+    if (olusturulmaTarihi != null) {
+      kitapMap["olusturulmaTarihi"] = olusturulmaTarihi.millisecondsSinceEpoch;
+    }
+    return kitapMap;
+  }
+
+  Kitap _mapToKitap(Map<String, dynamic> map) {
+    int? olusturulmaTarihi = map["olusturulmaTarihi"];
+    if (olusturulmaTarihi != null) {
+      map["olusturulmaTarihi"] = DateTime.fromMicrosecondsSinceEpoch(
+        olusturulmaTarihi,
+      );
+    }
+    return Kitap.fromMap(map);
   }
 }
 
