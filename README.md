@@ -254,7 +254,11 @@ Not : and ve or kelimelerini kullanarak  listeleri filtreleyebiliriz  ve 2 ve da
 -------------view katmanı
   Bu katmanda sadece görsel arayüzün çizilmesi içine gereken kodlar yazılır.
   122=> burada  void _kitapEkle(BuildContext context) fonksiyonu gösel arayüz çizmekten ziyade kullanıcının tarafından girilen kitabı veritabanına ulaşıp veritabanına kaydeden bir fonk. olduğu için modelView  katmanına taşıyacağız.kitapGüncelle kitapSil v.b ayrıca Sabiteler ve diğer arayüzle ilgili olmayan bütün şeyleri model View katmanına taşıyacağız. 
-
+  ------------- view_model katmanı
+   Bu katman view katmanını ilgilendirmeyen vieww ait veri ve fonksiyonları burada tutarız
+   her view in bir view modeli olmalı
+   123 => kitaplar_view_model , bolumler_view_model , bolum_detay_view_model ı view katmanında oluşturup
+   her birinin içinde class KitaplarViewModel{} clasını oluşturuyoruz. 
 
 
 
