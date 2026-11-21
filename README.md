@@ -107,9 +107,11 @@ List<Map<String,dynamic>>> kitaplarMap= await db.query(tabloadi)
 60=> bölümleri veritabanında okuyup çekerken kitap  read fonk farklı olarak tüm bölümlere ait bölümleri değil seçilen kitaba ait bölümleri göstermesi için Future<List<Bolum>> readTumBolumler(int kitapId) bir kitap id  istiyoruz.
 61=> db.query( tabloadi, where:"$_kiyapIdBolumler= *" whereArgs: [kitapId])  where  ve whereArgs ekleyerek filitreleme yapıp kitapId  ye göre bölmleri çekiyoruz.
 -------------Bölümler Sayfası VİEW
+Bu sayfada tıklanan kitabın bölümeri listelenir her bölümün satırınında bölüm güncelle ve bölüm sil butonları olup aşağıda + butonu ile yeni bölüm ekleyebiliriz.Her bir bölüm satırın tıklandığında (ontap ) bölümDetay sayfasına yönlendirir ve orada yazı yazama sayfsı açılır.
 62=> view sayfası altında bolumler_Sayfasi.dart açıyoruz Stateful Widget
 63=> bu sayfanın kurucu metotunda tıklanan kitap alacağız yani  final Kitap _kitap nesnesi oluşturup bunu kurucu metotta this._kitap ile alıyoruz.
-64=> listTile içideki kitabı tıklayınca bölümler açılacağından listTile içine onTap(){_bolumlerSayfasiAc(context ,index)} açıyoruz 
+64=> listTile içideki kitabı tıklayınca bölümler açılacağından li
+stTile içine onTap(){_bolumlerSayfasiAc(context ,index)} açıyoruz 
 65=>  KitaplarSayfasi içinde void _bolumlerSayfasiAc(BuildContext context, in index){}  metodu ile bolum sayfasında yönlendiriyoruz(MaterialPageRoute  ve Navigator.push).  Bu sayfada BolumlerSayfasi(this.kitap) kitap nesnesi göndermek için index değerini aldık
 parantez içide (_kitaplar[index]) kitaplar listesinde  index değerindeki kitabı gönderiyoruz.
 65=> kitapSayfasini komple bölüm sayfasında yapıştırıyoruz kitap yazan yerlere bölüm yazıyoruz.
@@ -145,7 +147,7 @@ NOT: NEDEN LİSTE DEĞİLDE MAP OLUŞTURUYORUZ?ÇÜNKÜ ileride veritabanında t
   return showDilog<List<dynamic>> diyerek  ve  Future<List<dynamic>>?>  _pencereAc  diyerek fonsiyoru geriye List<dynamic> döndürür şekilde ayarladık.
 
 83=> 9. adımda _pencereAc fonk. içine alam kitapEkle() fonk.  _kitapGuncelle()  fonk. düzenliyoruz.
-84=> kitapGuncelle fonk bir değişiklik yapacağız. KitapGüncelle butonuna basınca mevcut kitabın adı ve kategorisi ShowDialogda görünmüyordu .Bunu için pencereAc fonk güncelliyoruz ;
+84=> kitapGuncelle fonk bir değişiklik yapacağız.Listedeki bir kitabın KitapGüncelle butonuna basınca mevcut kitabın adı ve kategorisi ShowDialogda kitap ve kategori kısmında  görünmüyordu .Bunu için pencereAc fonk güncelliyoruz ;
  Future<List<dynamic>?>  _pencereAc(
     BuildContext context, {
     String mevcutIsim = "",
@@ -173,7 +175,7 @@ db bizim veritabanı dosyamızi oldVersion veritabanımızdaki version numarası
 
 90=>await db.execute("ALTER TABLE "Kitaplar" ADD COLUMN "kategori" INTEGER DEFAULT 0" ); DEFAULT 0 Vermemizin nedeni önceden veritabanına eklenen kitaplarda kategori sutunu null olarak çalışırsa program hata verecek bu yüzden önceki kitaplar kategori 1 olacak yani "genel" olacak
 
-bunu eklesek bile tablo yine veritabanına eklenmeyecek çünkü version:1 hala 1  biz burada 2 yapmalıyız ki onUpgrade  tetiklenip çalışsın
+kategori satırının yukarıdaki gibi eklesek bile tablo yine veritabanına eklenmeyecek çünkü version:1 hala 1  biz burada 2 yapmalıyız ki onUpgrade  tetiklenip çalışsın
 Yani onUpgrade çalışması için cihazın veri tabanı ile bizim simdi girdiğimiz version farklı olması gerekiyor aynı olursa çalışmaz.
 -----------------------onUpgrade Tabloya kategori dışında başka bir değişken daha eklemek 
 91=>YerelVeriTabanı içinde _tabloGuncelle fonk önceden katergori satırı ekleyen bir sql komutu(88 adım )yazmıştık.
