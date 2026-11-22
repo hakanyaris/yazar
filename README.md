@@ -187,7 +187,7 @@ Bunu önlemek için eklenecek her bir sql komutunu bir string listesine kaydedip
 92=> _buildKategoriFiltresi()  fonk. oluşturup ana sayfada en üstte göstermek için _buildListView içinde column ile sarmalayıp içine  dropDown koyuyuoruz(_perncereAc içindeki Dropdown ).ListViewe.builderi expanded ile sarmalıyoruz.
 93=> dropDown value değerini tutan int _secilenDegeri=0;  kitaplarSayfasında oluşturuyoruz.
 94=> Listede Hepsi değeri yok bu yüzden  List<int> _tumKategoriler = [-1];  listesi oluşturup initState içinde 
-_tumKategoriler.addAll(Sabitler.kategoriler.keys);  _1 değerininde olduğu yeni bir liste verir.
+_tumKategoriler.addAll(Sabitler.kategoriler.keys);  -1 değerininde olduğu yeni bir liste verir.
 
 95=>_buildKategoriFiltresi() fonk  içindeki listeyi _tumKategoriler den çekiyoruz DropDownMenuItem in  child kısmına  Text () içinde kategoriId ==-1 ise "Hepsi" değilse Sabitler.kategoriler[kategoriId] ?? "" olacak
 
@@ -197,8 +197,8 @@ _tumKategoriler.addAll(Sabitler.kategoriler.keys);  _1 değerininde olduğu yeni
 
 97=> db.duery e where :"kategoriId = ?" whereArgs:[kategoriId] ekleyerek  AnaSayfadaki listelemeyi bu şekilde filtreliyoruz.
 
-98=> Hepsi seçeneğeni tıklanınca _secilenKategori=_1 olacağından  veritabanında kategorisi  -1 olan hiçbir kitap yok bu yüzden ekranda hiçbir kitap gösterilmeyecek.
-  Bunu düzeltmek için _secilenKategori=_1 olunca where :"kategoriId = ?" whereArgs:[kategoriId]  filtreleri hiç yapılmasın filtre olmayınca tüm liste geri dönecek zaten.
+98=> Hepsi seçeneğeni tıklanınca _secilenKategori=-1 olacağından  veritabanında kategorisi  -1 olan hiçbir kitap yok bu yüzden ekranda hiçbir kitap gösterilmeyecek.
+  Bunu düzeltmek için _secilenKategori=-1 olunca where :"kategoriId = ?" whereArgs:[kategoriId]  filtreleri hiç yapılmasın filtre olmayınca tüm liste geri dönecek zaten.
 
 99=>(readTumKitaplar fonk .) String? filterWhere ve List<int>? filtreArgs; iki değişken oluşturup bunları where ve whereArgs atıyoruz( where: filtreWhere, whereArgs: filtreArgs,)   kategoriId -1 büyükse  filterWhere filterWhere filtreleme çalışması içinayarlıyoruz.
  if (kategoriId !=-1) { filtreWhere = " $_kategoriKitaplar = ? "; filtreArgs = [kategoriId];}
