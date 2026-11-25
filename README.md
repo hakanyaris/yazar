@@ -259,8 +259,12 @@ Not : and ve or kelimelerini kullanarak  listeleri filtreleyebiliriz  ve 2 ve da
   ------------- view_model katmanı
    Bu katman view katmanını ilgilendirmeyen vieww ait veri ve fonksiyonları burada tutarız
    her view in bir view modeli olmalı
-   123 => kitaplar_view_model , bolumler_view_model , bolum_detay_view_model ı view katmanında oluşturup
-   her birinin içinde class KitaplarViewModel{} clasını oluşturuyoruz. 
+   123 => kitaplar_view_model , bolumler_view_model , bolum_detay_view_model ı view_model katmanında oluşturup
+   her birinin içinde kendi  class KitaplarViewModel{}, ..........ViewModel{}  clasını oluşturuyoruz. 
+   124=> kitaplar_sayfasi girip görsel arayüzü ilgilendirmeyen KitapEkle ,KitapSil...........pencereAc gibi fonksiyonları KESİP KitaplarViewModel sayfasında yapıştırıyoruz. importları yapıyoruz.
+   125=> kitaplar_sayfasi değişkenleri de kesip yapıştırıyoruz.değişkenler  List<Kitap> _kitaplar , ScrollController _scrollController,int _secilenKategori  v.b hepsini kesioyoruz
+       setStateleri yorum satırı haline getiriyoruz.
+  
 
 
 

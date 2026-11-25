@@ -1,5 +1,5 @@
 class Kitap {
-  int? id;
+  dynamic id;
   String isim;
   DateTime olusturulmaTarihi;
   int kategori;
